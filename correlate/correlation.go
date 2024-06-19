@@ -3,7 +3,7 @@ package correlate
 import (
 	"reflect"
 
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 func Dedupe(es []events.LogItem) {

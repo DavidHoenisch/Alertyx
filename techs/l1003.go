@@ -3,8 +3,8 @@ package techs
 import (
 	"fmt"
 
-	"github.com/sourque/louis/correlate"
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/correlate"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 type L1003 struct {

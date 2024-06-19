@@ -1,9 +1,9 @@
 package techs
 
 import (
-	"github.com/sourque/louis/correlate"
-	"github.com/sourque/louis/events"
-	"github.com/sourque/louis/system"
+	"github.com/DavidHoenisch/Alertyx/correlate"
+	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/system"
 )
 
 type L1001 struct {

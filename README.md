@@ -1,32 +1,32 @@
-# louis
+# alertyx
 
-`louis` is a simple tool using eBPF to automatically detect and respond to malicious behavior on a Linux system.
+`alertyx` is a simple tool using eBPF to automatically detect and respond to malicious behavior on a Linux system.
 
 ## Usage
 
 ```
 Usage:
-  louis [command]
+  alertyx [command]
 
 Available Commands:
   help        Help about any command
   hunt        hunt for existing malicious activity
   mitigate    mitigate all known vulnerabilities
   monitor     actively monitor for malicious action
-  version     print louis version
+  version     print alertyx version
 
 Flags:
   -a, --active    counter detected malicious activity (dangerous, may clobber)
-  -h, --help      help for louis
+  -h, --help      help for alertyx
   -s, --syslog    output to syslog
   -v, --verbose   enable verbose output
 
-Use "louis [command] --help" for more information about a command.
+Use "alertyx [command] --help" for more information about a command.
 ```
 
 ## Information
 
-louis gathers information from the kernel through eBPF (with BCC). These sources are analyzed with information from categorized techniques and vulnerabilities.
+alertyx gathers information from the kernel through eBPF (with BCC). These sources are analyzed with information from categorized techniques and vulnerabilities.
 
 ```
                                                 +------------+
@@ -39,7 +39,7 @@ louis gathers information from the kernel through eBPF (with BCC). These sources
                    |                                     |      |
 +--------+         | +---------+    +----------+     +---+---+  |
 |        |         | |         |    |          +---->+       |  |
-|        |         | | Sources +--->+ Analysis |     | louis |  |
+|        |         | | Sources +--->+ Analysis |     | alertyx |  |
 |        |   eBPF  | |         |    |          |     |       |  |
 | Kernel +---------->+ Sockets |    +----------+     +--+----+  |
 |        |         | | Users   |               ^        ^       |
@@ -52,21 +52,21 @@ louis gathers information from the kernel through eBPF (with BCC). These sources
                    +--------------------------------------------+
 ```
 
-> There is no kernelspace component (other than the eBPF data-gathering code), which means `louis` is more susceptible to resource exhaustion and various types of executable manipulation. However, if that happens, you'll probably know about it.
+> There is no kernelspace component (other than the eBPF data-gathering code), which means `alertyx` is more susceptible to resource exhaustion and various types of executable manipulation. However, if that happens, you'll probably know about it.
 
 ## Installation
 
 1. Ensure [BCC](https://github.com/iovisor/bcc) is installed.
-2. Install `louis`.
+2. Install `alertyx`.
     - Clone this repository and build the binary (requires Go):
         ```
-        git clone https://github.com/sourque/louis && cd louis && go build
+        git clone https://github.com/sourque/alertyx && cd alertyx && go build
         ```
-    - Or download the `louis` binary from releases.
+    - Or download the `alertyx` binary from releases.
 
 ## Screenshots & Examples
 
-![Example of Louis Running](./docs/example.gif)
+![Example of alertyx Running](./docs/example.gif)
 
 ## Fun future activities
 

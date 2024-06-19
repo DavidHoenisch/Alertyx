@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/sourque/louis/events"
-	"github.com/sourque/louis/techs"
+	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/techs"
 )
 
 type Detection struct {

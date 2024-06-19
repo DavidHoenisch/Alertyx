@@ -18,7 +18,7 @@ func (e Listen) Print() string {
 	return fmt.Sprintf("Addr %d, Port %d", e.Addr, e.Port)
 }
 
-// Credit to https://blog.yadutaf.fr/2016/03/30/turn-any-syscall-into-event-introducing-ebpf-kernel-probes/
+// ListenBPF Credit to https://blog.yadutaf.fr/2016/03/30/turn-any-syscall-into-event-introducing-ebpf-kernel-probes/
 func ListenBPF(evChan chan Event, ctx Ctx) {
 	eventType := "listen"
 	m := bpf.NewModule(`

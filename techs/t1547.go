@@ -1,7 +1,7 @@
 package techs
 
 import (
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 type T1547 struct {

@@ -1,9 +1,14 @@
-module github.com/sourque/louis
+module github.com/DavidHoenisch/Alertyx
 
-go 1.13
+go 1.22
 
 require (
-	github.com/iovisor/gobpf v0.0.0-20200614202714-e6b321d32103
+	github.com/iovisor/gobpf v0.2.0
 	github.com/logrusorgru/aurora v2.0.3+incompatible
-	github.com/spf13/cobra v1.0.0
+	github.com/spf13/cobra v1.8.0
+)
+
+require (
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 )

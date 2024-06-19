@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 func findSession(es []events.LogItem) (string, error) {

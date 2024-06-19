@@ -21,6 +21,7 @@ type Ctx struct {
 	Quit   chan bool
 }
 
+// Event is an interface that represents an event object.
 type Event interface {
 	Print() string
 	Write([]byte) (Event, error)
@@ -166,8 +167,12 @@ func newError(eventType, errorMsg string, err error) string {
 	return eventType + ": " + errorMsg + ": " + err.Error()
 }
 
-// readEvents provides a standard interface to read and parse events from a BPF map
-// and correctly read values for each type of event reture value
+// readEvents reads events from a channel and processes them.
+// It uses a BPF table and a perf map to receive events and decode the received data.
+// It caches different types of events and their data in different maps.
+// It also sets the password and other fields of the events based on the data received.
+// It sends the processed events to the evChan channel.
+// It stops reading events when ctx.Quit is received.
 func readEvents(event Event, evChan chan Event, ctx Ctx, m *bcc.Module, eventType string) {
 	table := bcc.NewTable(m.TableId("events"), m)
 	channel := make(chan []byte, 1000)

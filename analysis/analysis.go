@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sourque/louis/correlate"
-	"github.com/sourque/louis/events"
-	"github.com/sourque/louis/output"
-	"github.com/sourque/louis/techs"
+	"github.com/DavidHoenisch/Alertyx/correlate"
+	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/output"
+	"github.com/DavidHoenisch/Alertyx/techs"
 )
 
 // Infractions (detections above warn) by user IDs

@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/sourque/louis/correlate"
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/correlate"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 type T1098 struct {

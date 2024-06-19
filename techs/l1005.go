@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/sourque/louis/events"
+	"github.com/DavidHoenisch/Alertyx/events"
 )
 
 type L1005 struct {

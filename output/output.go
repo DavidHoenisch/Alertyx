@@ -22,7 +22,7 @@ var (
 func Init() {
 	if Syslog {
 		var err error
-		syslogWriter, err = syslog.New(syslog.LOG_INFO|syslog.LOG_DAEMON, "louis")
+		syslogWriter, err = syslog.New(syslog.LOG_INFO|syslog.LOG_DAEMON, "alertyx")
 		if err != nil {
 			log.Fatalln("failed to initialize syslog writer:", err.Error())
 		}

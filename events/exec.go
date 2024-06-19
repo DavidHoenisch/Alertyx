@@ -1,4 +1,4 @@
-// Exec provides data on execve calls.
+// Package events Exec provides data on execve calls.
 // This code is modified from iovisor/gobpf examples.
 package events
 

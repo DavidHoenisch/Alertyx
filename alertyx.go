@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/sourque/louis/analysis"
-	"github.com/sourque/louis/events"
-	"github.com/sourque/louis/output"
-	"github.com/sourque/louis/techs"
+	"github.com/DavidHoenisch/Alertyx/analysis"
+	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/output"
+	"github.com/DavidHoenisch/Alertyx/techs"
 
 	"github.com/spf13/cobra"
 )
@@ -25,13 +25,14 @@ const (
 	version = "0.0.5"
 )
 
+// main is the entry point of the program. It defines the commands and flags for the alertyx CLI tool and executes the selected command.
 func main() {
 	cmdMonitor := &cobra.Command{
 		Use:     "monitor",
 		Aliases: []string{"m", "mon", "eyes"},
 		Short:   "actively monitor for malicious action",
 		Run: func(cmd *cobra.Command, args []string) {
-			louisMonitor()
+			alertyxMonitor()
 		},
 	}
 
@@ -44,7 +45,7 @@ func main() {
 		Aliases: []string{"h", "uwu"},
 		Short:   "hunt for existing malicious activity",
 		Run: func(cmd *cobra.Command, args []string) {
-			louisHunt()
+			alertyxHunt()
 		},
 	}
 
@@ -55,20 +56,20 @@ func main() {
 		Aliases: []string{"mit", "cybpat"},
 		Short:   "mitigate all known vulnerabilities",
 		Run: func(cmd *cobra.Command, args []string) {
-			louisMitigate()
+			alertyxMitigate()
 		},
 	}
 
 	cmdVersion := &cobra.Command{
 		Use:   "version",
-		Short: "print louis version",
+		Short: "print alertyx version",
 		Run: func(cmd *cobra.Command, args []string) {
-			output.Notice("louis version", version)
+			output.Notice("alertyx version", version)
 		},
 	}
 
 	rootCmd := &cobra.Command{
-		Use: "louis",
+		Use: "alertyx",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			output.Init()
 		},
@@ -81,8 +82,19 @@ func main() {
 	rootCmd.Execute()
 }
 
-func louisMonitor() {
-	output.Info("Welcome to louis :)")
+// alertyxMonitor is a function that sets up and starts a monitoring loop. It listens for events and handles their output and detection results.
+// The function prints a welcome message and starts monitoring when called.
+// When the program receives a CTRL-C signal, it quits the monitoring routines.
+// It creates an events context that contains output and error channels, as well as a WaitGroup.
+// It also creates a channel for receiving events.
+// A list of implemented sources is defined, which includes functions that handle different types of events.
+// The function loads each eBPF module concurrently and waits for all modules to be loaded.
+// It then handles the output from the BPF modules, logging events and calling the appropriate analysis function based on the event type.
+// The function also handles detection results, printing them and performing any necessary actions such as cleaning or mitigation.
+// The monitoring loop runs until the program receives a signal.
+// The function sends a quit signal to the events context to cleanly exit all monitoring routines.
+func alertyxMonitor() {
+	output.Info("Welcome to alertyx :)")
 
 	// Quit when program receives CTRL-C.
 	sig := make(chan os.Signal, 1)
@@ -190,7 +202,12 @@ func louisMonitor() {
 	evCtx.Quit <- true
 }
 
-func louisHunt() {
+// alertyxHunt is a function that performs hunting for existing malicious activity.
+// It retrieves a list of all available techniques using the `techs.All` function and iterates over each technique.
+// For each technique, it prints a hunting message and calls the `Hunt` method to check for evidence of exploitation.
+// If an error occurs during the hunting process, it prints an error message.
+// If the hunting result indicates that a technique has been found, it prints a positive message with the name of the technique and the event details. It also performs additional actions
+func alertyxHunt() {
 	ts := techs.All()
 	for _, t := range ts {
 		output.Info("Hunting:", t.Name())
@@ -208,7 +225,8 @@ func louisHunt() {
 	}
 }
 
-func louisMitigate() {
+// alertyxMitigate is a function that checks for mitigation techniques for each tech in the techs.All list. It iterates through the list and checks for mitigation for each technique
+func alertyxMitigate() {
 	ts := techs.All()
 	for _, t := range ts {
 		output.Info("Checking:", t.Name())
