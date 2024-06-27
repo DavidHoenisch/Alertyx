@@ -11,6 +11,7 @@ const (
 	fileNameSize = 80
 )
 
+// NOTE: C code block
 var (
 	eventBaseStr = `
 	u32 uid;

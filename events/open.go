@@ -27,6 +27,7 @@ func OpenBPF(evChan chan Event, ctx Ctx) {
 	eventType := "open"
 	event := &Open{}
 
+	// NOTE: C code block
 	m := bcc.NewModule(`
 		#include <uapi/linux/ptrace.h>
 		#include <linux/sched.h>

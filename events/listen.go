@@ -21,6 +21,7 @@ func (e Listen) Print() string {
 // ListenBPF Credit to https://blog.yadutaf.fr/2016/03/30/turn-any-syscall-into-event-introducing-ebpf-kernel-probes/
 func ListenBPF(evChan chan Event, ctx Ctx) {
 	eventType := "listen"
+	// NOTE: C code block
 	m := bpf.NewModule(`
 		#include <uapi/linux/ptrace.h>
 		#include <net/inet_sock.h>

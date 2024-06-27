@@ -31,6 +31,8 @@ func (e *Readline) Print() string {
 
 func ReadlineBPF(evChan chan Event, ctx Ctx) {
 	eventType := "readline"
+
+	// NOTE: C code block
 	m := bpf.NewModule(`
 		#include <uapi/linux/ptrace.h>
 		`+reqFunctions+`

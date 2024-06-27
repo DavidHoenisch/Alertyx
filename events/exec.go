@@ -44,6 +44,7 @@ func (e *Exec) SetOther(args []interface{}) {
 	e.Argv[len(tmp)] = '\x00'
 }
 
+// NOTE: C code block
 var execSource = `
 #include <uapi/linux/ptrace.h>
 #include <linux/sched.h>
