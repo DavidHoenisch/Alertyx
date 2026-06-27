@@ -21,12 +21,12 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Current Status
 
-3 of 4 criteria complete. Next: Mutation testing in CI (on PRs to main).
+All 4 criteria complete.
 
-### Iteration 3: >80% mutation score before Phase 1 complete
+### Iteration 4: Mutation testing in CI (on PRs to main)
 
-- Added `TestL1001Clean` covering error and success paths for L1001 mitigation logic
-- Updated `.gremlins.yaml` with 80% efficacy/mutant-coverage thresholds and timeout-coefficient 30
-- Added `TestGremlinsConfigSetsTimeoutCoefficient` in `ci/gremlins_test.go`
-- Verified gremlins results: 100% test efficacy, 100% mutator coverage (17 killed, 0 lived, 0 not covered)
-- Verified with `go test ./...` and `scripts/mutation-test.sh` (all pass)
+- Added `mutation` job to `.github/workflows/test.yml` that runs on pull requests targeting main
+- Job installs gremlins and runs `scripts/mutation-test.sh` after the test job passes
+- Added workflow validation tests in `ci/workflow_test.go` for mutation job configuration
+- Added `Test / mutation` to `ci/branch-protection.json` required status checks
+- Verified with `go test ./...` (all pass)
