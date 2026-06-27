@@ -53,10 +53,17 @@ type LogItem struct {
 }
 
 const (
-	eventNormal = iota
-	eventPwd
-	eventRet
-	eventOther
+	EventKindNormal = iota
+	EventKindPwd
+	EventKindRet
+	EventKindOther
+)
+
+const (
+	eventNormal = EventKindNormal
+	eventPwd    = EventKindPwd
+	eventRet    = EventKindRet
+	eventOther  = EventKindOther
 )
 
 func (e *eventBase) Print() string {
@@ -163,93 +170,6 @@ func CStr(cString []byte) string {
 	return string(cString[:byteIndex])
 }
 
-func newError(eventType, errorMsg string, err error) string {
+func FormatError(eventType, errorMsg string, err error) string {
 	return eventType + ": " + errorMsg + ": " + err.Error()
-}
-
-// readEvents reads events from a channel and processes them.
-// It uses a BPF table and a perf map to receive events and decode the received data.
-// It caches different types of events and their data in different maps.
-// It also sets the password and other fields of the events based on the data received.
-// It sends the processed events to the evChan channel.
-// It stops reading events when ctx.Quit is received.
-func readEvents(event Event, evChan chan Event, ctx Ctx, m *bcc.Module, eventType string) {
-	table := bcc.NewTable(m.TableId("events"), m)
-	channel := make(chan []byte, 1000)
-
-	perfMap, err := bcc.InitPerfMap(table, channel, nil)
-	if err != nil {
-		ctx.Error <- newError(eventType, "failed to decode received data", err)
-		return
-	}
-
-	go func() {
-		pwdCache := make(map[uint32][]string)
-		otherCache := make(map[uint32][]interface{})
-		eventCache := make(map[uint32]Event)
-		ctx.Load <- eventType
-		ctx.LoadWg.Done()
-		for {
-			data := <-channel
-			event, err := event.Write(data)
-			if err != nil {
-				ctx.Error <- newError(eventType, "failed to decode received data", err)
-				continue
-			}
-			if event.IsRet() {
-				caEvent, ok := eventCache[event.FetchPid()]
-				if ok {
-					caEvent.SetRetVal(event.FetchRetVal())
-					// Workaround for valid execve comm only on return
-					switch event.(type) {
-					case *Exec:
-						tmpEventNew := event.(*Exec)
-						tmpEventOld := caEvent.(*Exec)
-						tmpEventOld.Comm = tmpEventNew.Comm
-						caEvent = tmpEventOld
-					}
-					event = caEvent
-				} else {
-					// ctx.Error <- newError(eventType, "event didn't have an item in cache!", errors.New("event didn't have an item in event cache"))
-				}
-				if pwdVal, ok := pwdCache[event.FetchPid()]; ok {
-					tmp := strings.Join(pwdVal, "/")
-					if tmp[0] != '/' {
-						tmp = "/" + tmp
-					}
-					tmp = strings.Replace(tmp, "\n", "\\n", -1)
-					tmp = strings.TrimSpace(tmp)
-					if len(tmp) >= 128 {
-						tmp = tmp[:124] + "..."
-					}
-					event.SetPwd(tmp)
-					delete(pwdCache, event.FetchPid())
-				}
-				if otherVal, ok := otherCache[event.FetchPid()]; ok {
-					event.SetOther(otherVal)
-					delete(otherCache, event.FetchPid())
-				}
-				evChan <- event
-				delete(eventCache, event.FetchPid())
-			} else if event.IsPwd() {
-				pwdItems, ok := pwdCache[event.FetchPid()]
-				if !ok {
-					pwdItems = make([]string, 0)
-				}
-				pwdCache[event.FetchPid()] = append([]string{event.FetchPwd()}, pwdItems...)
-			} else if event.IsOther() {
-				otherItems, ok := otherCache[event.FetchPid()]
-				if !ok {
-					otherItems = make([]interface{}, 0)
-				}
-				otherCache[event.FetchPid()] = append([]interface{}{event.FetchOther()}, otherItems...)
-			} else {
-				eventCache[event.FetchPid()] = event
-			}
-		}
-	}()
-
-	perfMap.Start()
-	<-ctx.Quit
-	perfMap.Stop()
 }

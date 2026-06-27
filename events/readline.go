@@ -14,11 +14,7 @@
 
 package events
 
-import (
-	"fmt"
-
-	bpf "github.com/iovisor/gobpf/bcc"
-)
+import "fmt"
 
 type Readline struct {
 	eventBase
@@ -27,43 +23,4 @@ type Readline struct {
 
 func (e *Readline) Print() string {
 	return fmt.Sprintf("%s", CStr(e.Str[:]))
-}
-
-func ReadlineBPF(evChan chan Event, ctx Ctx) {
-	eventType := "readline"
-
-	// NOTE: C code block
-	m := bpf.NewModule(`
-		#include <uapi/linux/ptrace.h>
-		`+reqFunctions+`
-
-    struct event_t {
-        `+eventBaseStr+`
-        char str[80];
-    };
-
-    int get_return_value(struct pt_regs *ctx) {
-        `+gatherStr+`
-        `+getPwd+`
-        bpf_probe_read(&event.str, sizeof(event.str), (void *)PT_REGS_RC(ctx));
-       `+retStr+`
-    }
-
-`, []string{})
-	defer m.Close()
-
-	readlineUretprobe, err := m.LoadUprobe("get_return_value")
-	if err != nil {
-		ctx.Error <- "readline: failed to load get_return_value: " + err.Error()
-		return
-	}
-
-	err = m.AttachUretprobe("/bin/bash", "readline", readlineUretprobe, -1)
-	if err != nil {
-		ctx.Error <- "readline: failed to attach return_value: " + err.Error()
-		return
-	}
-
-	event := &Readline{}
-	readEvents(event, evChan, ctx, m, eventType)
 }
