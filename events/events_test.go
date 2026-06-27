@@ -64,6 +64,9 @@ func TestEventBaseMethods(t *testing.T) {
 	if base.FetchPid() != 4242 {
 		t.Fatalf("FetchPid() = %d", base.FetchPid())
 	}
+	if base.FetchPpid() != 1 {
+		t.Fatalf("FetchPpid() = %d", base.FetchPpid())
+	}
 	if base.IsRet() || base.IsPwd() || base.IsOther() {
 		t.Fatal("expected normal event flags to be false")
 	}
