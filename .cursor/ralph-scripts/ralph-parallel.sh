@@ -341,11 +341,37 @@ while [[ $CURRENT_INDEX -lt $TOTAL_ISSUES ]] || [[ $ACTIVE_JOBS -gt 0 ]]; do
                     if [[ "$NO_MERGE" != "true" ]]; then
                         log_info "Merging $branch_name to $INTEGRATION_BRANCH..."
                         git checkout "$INTEGRATION_BRANCH"
-                        if git merge "$branch_name" -m "ralph: merge issue #$issue_num"; then
+                        
+                        # Try merge - if conflicts occur, try to resolve known-conflicting files
+                        if git merge "$branch_name" -m "ralph: merge issue #$issue_num" 2>/dev/null; then
                             log_success "Merged successfully"
                         else
-                            log_warn "Merge conflict - keeping branch separate"
-                            git merge --abort || true
+                            # Check if conflicts are only in ralph-specific files we can auto-resolve
+                            CONFLICT_FILES=$(git diff --name-only --diff-filter=U 2>/dev/null || true)
+                            RESOLVABLE=true
+                            
+                            for file in $CONFLICT_FILES; do
+                                case "$file" in
+                                    .ralph/*|RALPH_TASK.md)
+                                        # These are per-issue files, take theirs (the branch being merged)
+                                        git checkout --theirs "$file" 2>/dev/null || true
+                                        git add "$file" 2>/dev/null || true
+                                        ;;
+                                    *)
+                                        # Real conflict in actual code
+                                        RESOLVABLE=false
+                                        ;;
+                                esac
+                            done
+                            
+                            if [[ "$RESOLVABLE" == "true" ]] && [[ -n "$CONFLICT_FILES" ]]; then
+                                # All conflicts resolved, complete the merge
+                                git commit -m "ralph: merge issue #$issue_num (auto-resolved ralph files)" 2>/dev/null || true
+                                log_success "Merged with auto-resolved conflicts"
+                            else
+                                log_warn "Merge conflict in code files - keeping branch separate"
+                                git merge --abort || true
+                            fi
                         fi
                         git checkout "$DEFAULT_BRANCH"
                     fi
