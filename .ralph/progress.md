@@ -15,7 +15,7 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 - events package: 99.1% coverage (target: 70%+)
 - techs package: 97.8% coverage (target: 70%+)
-- Remaining criteria: all tests pass, coverage report
+- Remaining criteria: coverage report
 
 ### Iteration 2: techs package unit tests (97.8% coverage)
 
@@ -23,3 +23,9 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Covered `All()`, `techBase` defaults, every `Name()` and `Scan()` method
 - Exercised `L1001.Clean()`, `L1002.Check()`/`Mitigate()`, and `T1098` owner/permission branches
 - Used short `/tmp/authorized_keys_test` paths so Open filename field (80 bytes) is not truncated
+
+### Iteration 3: all tests pass with go test ./...
+
+- Verified full suite passes with `go test ./...` (events, techs, ci packages)
+- Added `ci/all_test.go` with `TestAllPackagesPass` that runs `go test ./...` from repo root
+- Uses `ALERTYX_FULL_SUITE` env guard to avoid recursive subprocess invocation

@@ -25,7 +25,7 @@ Establish baseline test coverage for core packages before making any code change
 ## Acceptance Criteria
 - [x] 70%+ coverage on `events` package
 - [x] 70%+ coverage on `techs` package
-- [ ] All tests pass with `go test ./...`
+- [x] All tests pass with `go test ./...`
 - [ ] Coverage report generated
 
 ## References
@@ -35,7 +35,7 @@ See ROADMAP.md Section 1.1
 
 - [x] 70%+ coverage on `events` package
 - [x] 70%+ coverage on `techs` package
-- [ ] All tests pass with `go test ./...`
+- [x] All tests pass with `go test ./...`
 - [ ] Coverage report generated
 
 ## Notes
