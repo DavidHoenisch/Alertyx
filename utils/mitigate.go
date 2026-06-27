@@ -17,7 +17,7 @@ func AlertyxMitigate() {
 				output.Positive("Mitigation possible:", t.Name())
 				if res.Ev != nil {
 					output.Tabber(1)
-					output.Negative(res.Ev.Print)
+					output.Negative(res.Ev.Print())
 					output.Tabber(0)
 				}
 			} else {

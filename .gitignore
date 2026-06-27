@@ -1,2 +1,23 @@
+# Binary
 alertyx
 Alertyx
+
+# Ralph worktrees (temporary, created during parallel runs)
+.ralph-worktrees/
+
+# Ralph logs (optional - remove this line if you want to track logs)
+.ralph/parallel/
+.ralph/activity.log
+.ralph/errors.log
+.ralph/.iteration
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
