@@ -1,0 +1,108 @@
+{
+  "tool": "go cover",
+  "tool_version": "go1.26.3",
+  "generated": "2026-06-27",
+  "coverage_target": 70,
+  "total_coverage": 2.9,
+  "packages_tested": 1,
+  "packages_no_tests": 10,
+  "under_target_count": 10,
+  "packages": [
+    {
+      "path": ".",
+      "package": "main",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "analysis",
+      "package": "analysis",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "ci",
+      "package": "ci",
+      "coverage": 80.0,
+      "has_tests": true
+    },
+    {
+      "path": "cmd",
+      "package": "cmd",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "common",
+      "package": "common",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "correlate",
+      "package": "correlate",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "events",
+      "package": "events",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "output",
+      "package": "output",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "system",
+      "package": "system",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "techs",
+      "package": "techs",
+      "coverage": 0.0,
+      "has_tests": false
+    },
+    {
+      "path": "utils",
+      "package": "utils",
+      "coverage": 0.0,
+      "has_tests": false
+    }
+  ],
+  "functions": [
+    {
+      "package": "events",
+      "function": "readEvents",
+      "file": "events/events.go",
+      "line": 176,
+      "coverage": 0.0
+    },
+    {
+      "package": "utils",
+      "function": "AlertyxMonitor",
+      "file": "utils/monitor.go",
+      "line": 14,
+      "coverage": 0.0
+    },
+    {
+      "package": "analysis",
+      "function": "processTechs",
+      "file": "analysis/analysis.go",
+      "line": 38,
+      "coverage": 0.0
+    },
+    {
+      "package": "correlate",
+      "function": "Summarize",
+      "file": "correlate/correlation.go",
+      "line": 18,
+      "coverage": 0.0
+    }
+  ]
+}

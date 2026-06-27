@@ -4,27 +4,32 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Completed Work
 
-### Iteration 1
-- Added `FuzzCStr` in `events/events_fuzz_test.go` with seed corpus covering null-terminated strings, empty input, lone null byte, and 256-byte buffers
-- Verified with `go test ./...`
+### Iteration 1 - gocyclo baseline documented
+- Added `ci/gocyclo-baseline.json` with cyclomatic complexity snapshot for 133 functions (gocyclo 0.6.0, threshold 10)
+- Two functions exceed threshold: `AlertyxMonitor` (21) and `readEvents` (15)
+- Added `ci/gocyclo_baseline.go` with baseline loader and query helpers
+- Added `ci/gocyclo_baseline_test.go` validating baseline structure and suspected high-complexity functions
 
-### Iteration 2
-- Added `FuzzWriteEventData` in `events/events_fuzz_test.go` covering Exec, Listen, Open, and Readline event types
-- Seed corpus includes empty input, encoded zero-value structs, and oversized 512-byte buffers per event kind
-- Verified with `go test ./...`
+### Iteration 2 - Coverage baseline documented
+- Added `ci/coverage-baseline.json` with package and function coverage snapshot (go cover, go1.26.3, 2.9% total, 70% target)
+- Only `ci` package has tests (80% coverage); 10 packages at 0% coverage
+- Documented suspected high-CRAP functions with 0% function-level coverage: readEvents, AlertyxMonitor, processTechs, Summarize
+- Added `ci/coverage_baseline.go` with baseline loader and query helpers
+- Added `ci/coverage_baseline_test.go` validating baseline structure and coverage gaps
 
-### Iteration 3
-- Verified `FuzzCStr` and `FuzzWriteEventData` with 30s+ fuzz runs (with and without `-race`); no panics found
-- Added `events/events_panic_test.go` with explicit regression tests for adversarial inputs (nil, truncated, oversized, high-byte C strings)
-- Added `scripts/fuzz.sh` for repeatable time-limited fuzz runs (`FUZZTIME` defaults to 30s per target)
-- Verified with `go test ./...` and `FUZZTIME=15s ./scripts/fuzz.sh`
+### Iteration 3 - High-CRAP functions identified and tracked
+- Added `ci/crap-baseline.json` with CRAP scores for 4 suspected functions (2 high, 2 medium)
+- High-CRAP: AlertyxMonitor (462), readEvents (240); medium: processTechs (12), Summarize (6)
+- Added `ci/crap_baseline.go` with ComputeCRAP, CrapRiskLevel, and baseline query helpers
+- Added `ci/crap_baseline_test.go` validating formula, risk classification, and high-CRAP tracking
 
-### Iteration 4
-- Added dedicated `fuzz` CI job in `.github/workflows/test.yml` running `./scripts/fuzz.sh` with `FUZZTIME=10s` per target
-- Updated `ci/workflow_test.go` with fuzz job validation tests and generalized `jobSection` for build/fuzz/test ordering
-- Added `Test / fuzz` to `ci/branch-protection.json` required status checks
-- Verified with `go test ./...` and `FUZZTIME=5s ./scripts/fuzz.sh`
+### Iteration 4 - Refactoring plan for functions with CRAP > 30
+- Added `ci/crap-refactoring-plan.json` with prioritized plans for AlertyxMonitor and readEvents
+- AlertyxMonitor: extract loadEBPFModules, dispatchEvent, printEvent, handleDetections (target CRAP 9.7)
+- readEvents: extract eventReadState, finalizeReturnEvent, buildPwdPath, cacheEntry (target CRAP 7.0)
+- Added `ci/crap_refactoring_plan.go` with plan loader and query helpers
+- Added `ci/crap_refactoring_plan_test.go` validating plan structure, baseline alignment, and projected scores
 
 ## Current Status
 
-All four criteria complete. Issue #2 fuzz testing work is done.
+All acceptance criteria complete. Issue #4 CRAP analysis baseline is done.

@@ -1,54 +1,56 @@
 ---
-task: "Issue #2: [Phase 1] Implement fuzz testing for event parsing"
+task: "Issue #4: [Phase 1] Implement CRAP analysis baseline"
 test_command: "go test -v ./..."
-github_issue: 2
+github_issue: 4
 ---
 
-# Issue #2: [Phase 1] Implement fuzz testing for event parsing
+# Issue #4: [Phase 1] Implement CRAP analysis baseline
 
-**Labels:** phase-1-testing,security,testing
+**Labels:** phase-1-testing,testing
 
 ## Task Description
 
 ## Overview
-Implement fuzz testing for code that parses untrusted kernel data.
+Establish CRAP (Change Risk Anti-Patterns) analysis to identify high-risk, undertested code.
 
-## Target Areas
-- `events/generics.go` - `WriteEventData()` binary parsing
-- `events/events.go` - `CStr()` C string conversion
-- `correlate/search.go` - search functions
+## Formula
+`CRAP(m) = complexity(m)^2 * (1 - coverage(m)/100)^3 + complexity(m)`
 
-## Implementation
-Use Go's native fuzzing (Go 1.18+):
+## Interpretation
+| CRAP Score | Risk Level | Action |
+|------------|------------|--------|
+| < 5 | Low | Acceptable |
+| 5-30 | Medium | Consider refactoring or adding tests |
+| > 30 | High | Priority refactor |
 
-```go
-func FuzzCStr(f *testing.F) {
-    f.Add([]byte("normal\x00string"))
-    f.Add([]byte{0x00})
-    f.Add([]byte{})
-    f.Add(make([]byte, 256))
-    
-    f.Fuzz(func(t *testing.T, data []byte) {
-        _ = CStr(data) // should never panic
-    })
-}
+## Suspected High-CRAP Functions
+- `events/events.go:readEvents()` - complex state machine
+- `utils/monitor.go:AlertyxMonitor()` - large select loop
+- `analysis/analysis.go:processTechs()` - detection pipeline
+- `correlate/correlation.go:Summarize()` - event filtering
+
+## Tools
+```bash
+go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+gocyclo -over 10 .
+go test -coverprofile=coverage.out ./...
 ```
 
 ## Acceptance Criteria
-- [x] Fuzz tests for `CStr()`
-- [x] Fuzz tests for `WriteEventData()`
-- [x] No panics found during fuzz runs
-- [x] Fuzz tests integrated into CI (time-limited)
+- [x] gocyclo baseline documented
+- [x] Coverage baseline documented
+- [x] High-CRAP functions identified and tracked
+- [x] Refactoring plan for functions with CRAP > 30
 
 ## References
-See ROADMAP.md Section 1.2
+See ROADMAP.md Section 1.4
 
 ## Success Criteria
 
-- [x] Fuzz tests for `CStr()`
-- [x] Fuzz tests for `WriteEventData()`
-- [x] No panics found during fuzz runs
-- [x] Fuzz tests integrated into CI (time-limited)
+- [x] gocyclo baseline documented
+- [x] Coverage baseline documented
+- [x] High-CRAP functions identified and tracked
+- [x] Refactoring plan for functions with CRAP > 30
 
 ## Notes
 

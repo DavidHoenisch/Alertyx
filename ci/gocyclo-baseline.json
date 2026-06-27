@@ -1,0 +1,942 @@
+{
+  "tool": "gocyclo",
+  "tool_version": "0.6.0",
+  "generated": "2026-06-27",
+  "complexity_threshold": 10,
+  "total_functions": 133,
+  "over_threshold_count": 2,
+  "max_complexity": 21,
+  "functions": [
+    {
+      "complexity": 21,
+      "package": "utils",
+      "function": "AlertyxMonitor",
+      "file": "utils/monitor.go",
+      "line": 14
+    },
+    {
+      "complexity": 15,
+      "package": "events",
+      "function": "readEvents",
+      "file": "events/events.go",
+      "line": 176
+    },
+    {
+      "complexity": 7,
+      "package": "utils",
+      "function": "AlertyxMitigate",
+      "file": "utils/mitigate.go",
+      "line": 9
+    },
+    {
+      "complexity": 7,
+      "package": "techs",
+      "function": "(T1098).Scan",
+      "file": "techs/t1098.go",
+      "line": 19
+    },
+    {
+      "complexity": 7,
+      "package": "techs",
+      "function": "(L1005).Scan",
+      "file": "techs/l1005.go",
+      "line": 18
+    },
+    {
+      "complexity": 6,
+      "package": "utils",
+      "function": "AlertyxHunt",
+      "file": "utils/hunt.go",
+      "line": 9
+    },
+    {
+      "complexity": 5,
+      "package": "techs",
+      "function": "(L1004).Scan",
+      "file": "techs/l1004.go",
+      "line": 18
+    },
+    {
+      "complexity": 5,
+      "package": "techs",
+      "function": "(L1003).Scan",
+      "file": "techs/l1003.go",
+      "line": 18
+    },
+    {
+      "complexity": 5,
+      "package": "techs",
+      "function": "(L1002).Scan",
+      "file": "techs/l1002.go",
+      "line": 19
+    },
+    {
+      "complexity": 5,
+      "package": "events",
+      "function": "OpenBPF",
+      "file": "events/open.go",
+      "line": 26
+    },
+    {
+      "complexity": 5,
+      "package": "events",
+      "function": "ListenBPF",
+      "file": "events/listen.go",
+      "line": 22
+    },
+    {
+      "complexity": 5,
+      "package": "events",
+      "function": "ExecBPF",
+      "file": "events/exec.go",
+      "line": 104
+    },
+    {
+      "complexity": 4,
+      "package": "events",
+      "function": "(*Exec).SetOther",
+      "file": "events/exec.go",
+      "line": 30
+    },
+    {
+      "complexity": 4,
+      "package": "correlate",
+      "function": "Bin",
+      "file": "correlate/search.go",
+      "line": 53
+    },
+    {
+      "complexity": 4,
+      "package": "ci",
+      "function": "TestWorkflowUploadsCoverageToCodecov",
+      "file": "ci/workflow_test.go",
+      "line": 207
+    },
+    {
+      "complexity": 4,
+      "package": "ci",
+      "function": "TestWorkflowTestJobRunsTests",
+      "file": "ci/workflow_test.go",
+      "line": 158
+    },
+    {
+      "complexity": 4,
+      "package": "ci",
+      "function": "jobSection",
+      "file": "ci/workflow_test.go",
+      "line": 40
+    },
+    {
+      "complexity": 3,
+      "package": "techs",
+      "function": "(L1001).Scan",
+      "file": "techs/l1001.go",
+      "line": 17
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "IsIgnored",
+      "file": "output/output.go",
+      "line": 147
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "Event",
+      "file": "output/output.go",
+      "line": 131
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "Info",
+      "file": "output/output.go",
+      "line": 97
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "Alert",
+      "file": "output/output.go",
+      "line": 63
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "Leveled",
+      "file": "output/output.go",
+      "line": 49
+    },
+    {
+      "complexity": 3,
+      "package": "output",
+      "function": "Init",
+      "file": "output/output.go",
+      "line": 22
+    },
+    {
+      "complexity": 3,
+      "package": "events",
+      "function": "ReadlineBPF",
+      "file": "events/readline.go",
+      "line": 32
+    },
+    {
+      "complexity": 3,
+      "package": "events",
+      "function": "(*Open).Print",
+      "file": "events/open.go",
+      "line": 16
+    },
+    {
+      "complexity": 3,
+      "package": "events",
+      "function": "CStr",
+      "file": "events/events.go",
+      "line": 155
+    },
+    {
+      "complexity": 3,
+      "package": "correlate",
+      "function": "search",
+      "file": "correlate/search.go",
+      "line": 68
+    },
+    {
+      "complexity": 3,
+      "package": "correlate",
+      "function": "EventType",
+      "file": "correlate/search.go",
+      "line": 40
+    },
+    {
+      "complexity": 3,
+      "package": "correlate",
+      "function": "ignoreEvent",
+      "file": "correlate/search.go",
+      "line": 28
+    },
+    {
+      "complexity": 3,
+      "package": "correlate",
+      "function": "InList",
+      "file": "correlate/correlation.go",
+      "line": 49
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestReadmeContainsCIBadge",
+      "file": "ci/workflow_test.go",
+      "line": 235
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestWorkflowTestJobGeneratesCoverageProfile",
+      "file": "ci/workflow_test.go",
+      "line": 196
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestWorkflowTestJobHasNoContinueOnError",
+      "file": "ci/workflow_test.go",
+      "line": 147
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "hasRequiredCheck",
+      "file": "ci/workflow_test.go",
+      "line": 137
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "branchProtectionConfig",
+      "file": "ci/workflow_test.go",
+      "line": 123
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestWorkflowTestJobDependsOnBuild",
+      "file": "ci/workflow_test.go",
+      "line": 103
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestWorkflowBuildJobHasNoContinueOnError",
+      "file": "ci/workflow_test.go",
+      "line": 92
+    },
+    {
+      "complexity": 3,
+      "package": "ci",
+      "function": "TestWorkflowHasDedicatedBuildJob",
+      "file": "ci/workflow_test.go",
+      "line": 81
+    },
+    {
+      "complexity": 3,
+      "package": "analysis",
+      "function": "isDetectionDupe",
+      "file": "analysis/analysis.go",
+      "line": 57
+    },
+    {
+      "complexity": 3,
+      "package": "analysis",
+      "function": "processTechs",
+      "file": "analysis/analysis.go",
+      "line": 38
+    },
+    {
+      "complexity": 2,
+      "package": "techs",
+      "function": "(L1001).Clean",
+      "file": "techs/l1001.go",
+      "line": 26
+    },
+    {
+      "complexity": 2,
+      "package": "system",
+      "function": "Kill",
+      "file": "system/processes.go",
+      "line": 7
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "EventLog",
+      "file": "output/output.go",
+      "line": 141
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Negative",
+      "file": "output/output.go",
+      "line": 123
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Positive",
+      "file": "output/output.go",
+      "line": 115
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Notice",
+      "file": "output/output.go",
+      "line": 107
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Warning",
+      "file": "output/output.go",
+      "line": 89
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Err",
+      "file": "output/output.go",
+      "line": 81
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Crit",
+      "file": "output/output.go",
+      "line": 73
+    },
+    {
+      "complexity": 2,
+      "package": "output",
+      "function": "Tabber",
+      "file": "output/output.go",
+      "line": 42
+    },
+    {
+      "complexity": 2,
+      "package": "events",
+      "function": "GetAll",
+      "file": "events/events.go",
+      "line": 132
+    },
+    {
+      "complexity": 2,
+      "package": "events",
+      "function": "(*eventBase).SetPwd",
+      "file": "events/events.go",
+      "line": 112
+    },
+    {
+      "complexity": 2,
+      "package": "events",
+      "function": "(*eventBase).FetchPwd",
+      "file": "events/events.go",
+      "line": 100
+    },
+    {
+      "complexity": 2,
+      "package": "correlate",
+      "function": "Owner",
+      "file": "correlate/explorers.go",
+      "line": 8
+    },
+    {
+      "complexity": 2,
+      "package": "correlate",
+      "function": "Related",
+      "file": "correlate/correlation.go",
+      "line": 34
+    },
+    {
+      "complexity": 2,
+      "package": "correlate",
+      "function": "Summarize",
+      "file": "correlate/correlation.go",
+      "line": 18
+    },
+    {
+      "complexity": 2,
+      "package": "cmd",
+      "function": "Execute",
+      "file": "cmd/root.go",
+      "line": 31
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "readReadme",
+      "file": "ci/workflow_test.go",
+      "line": 226
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestCodecovConfigExists",
+      "file": "ci/workflow_test.go",
+      "line": 190
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestBranchProtectionRequiresTestCheck",
+      "file": "ci/workflow_test.go",
+      "line": 177
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestBranchProtectionRequiresBuildCheck",
+      "file": "ci/workflow_test.go",
+      "line": 169
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestWorkflowTriggersOnPush",
+      "file": "ci/workflow_test.go",
+      "line": 74
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestWorkflowTriggersOnPullRequest",
+      "file": "ci/workflow_test.go",
+      "line": 67
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "TestWorkflowFileExists",
+      "file": "ci/workflow_test.go",
+      "line": 61
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "readWorkflow",
+      "file": "ci/workflow_test.go",
+      "line": 31
+    },
+    {
+      "complexity": 2,
+      "package": "ci",
+      "function": "repoRoot",
+      "file": "ci/workflow_test.go",
+      "line": 12
+    },
+    {
+      "complexity": 2,
+      "package": "analysis",
+      "function": "GetAll",
+      "file": "analysis/detections.go",
+      "line": 37
+    },
+    {
+      "complexity": 2,
+      "package": "analysis",
+      "function": "(*Detection).Brief",
+      "file": "analysis/analysis.go",
+      "line": 22
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "All",
+      "file": "techs/techs.go",
+      "line": 53
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(techBase).Mitigate",
+      "file": "techs/techs.go",
+      "line": 43
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(techBase).Check",
+      "file": "techs/techs.go",
+      "line": 39
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(techBase).Clean",
+      "file": "techs/techs.go",
+      "line": 35
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(techBase).Hunt",
+      "file": "techs/techs.go",
+      "line": 31
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(T1547).Scan",
+      "file": "techs/t1547.go",
+      "line": 15
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(T1547).Name",
+      "file": "techs/t1547.go",
+      "line": 11
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(T1098).Mitigate",
+      "file": "techs/t1098.go",
+      "line": 56
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(T1098).Check",
+      "file": "techs/t1098.go",
+      "line": 49
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(T1098).Name",
+      "file": "techs/t1098.go",
+      "line": 15
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1005).Name",
+      "file": "techs/l1005.go",
+      "line": 14
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1004).Name",
+      "file": "techs/l1004.go",
+      "line": 14
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1003).Name",
+      "file": "techs/l1003.go",
+      "line": 14
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1002).Mitigate",
+      "file": "techs/l1002.go",
+      "line": 49
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1002).Check",
+      "file": "techs/l1002.go",
+      "line": 43
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1002).Name",
+      "file": "techs/l1002.go",
+      "line": 15
+    },
+    {
+      "complexity": 1,
+      "package": "techs",
+      "function": "(L1001).Name",
+      "file": "techs/l1001.go",
+      "line": 13
+    },
+    {
+      "complexity": 1,
+      "package": "system",
+      "function": "Listens",
+      "file": "system/network.go",
+      "line": 3
+    },
+    {
+      "complexity": 1,
+      "package": "output",
+      "function": "Time",
+      "file": "output/output.go",
+      "line": 35
+    },
+    {
+      "complexity": 1,
+      "package": "main",
+      "function": "main",
+      "file": "main.go",
+      "line": 8
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Readline).Print",
+      "file": "events/readline.go",
+      "line": 28
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(Listen).Print",
+      "file": "events/listen.go",
+      "line": 17
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Readline).Write",
+      "file": "events/generics.go",
+      "line": 45
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Open).Write",
+      "file": "events/generics.go",
+      "line": 40
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Listen).Write",
+      "file": "events/generics.go",
+      "line": 35
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Exec).Write",
+      "file": "events/generics.go",
+      "line": 30
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "WriteEventData",
+      "file": "events/generics.go",
+      "line": 25
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Exec).FetchOther",
+      "file": "events/exec.go",
+      "line": 26
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*Exec).Print",
+      "file": "events/exec.go",
+      "line": 22
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "newError",
+      "file": "events/events.go",
+      "line": 166
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "TypeHeader",
+      "file": "events/events.go",
+      "line": 151
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "NewContext",
+      "file": "events/events.go",
+      "line": 142
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "Log",
+      "file": "events/events.go",
+      "line": 124
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).SetOther",
+      "file": "events/events.go",
+      "line": 118
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).FetchOther",
+      "file": "events/events.go",
+      "line": 108
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).Write",
+      "file": "events/events.go",
+      "line": 94
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).SetRetVal",
+      "file": "events/events.go",
+      "line": 90
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).FetchRetVal",
+      "file": "events/events.go",
+      "line": 86
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).IsOther",
+      "file": "events/events.go",
+      "line": 82
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).IsPwd",
+      "file": "events/events.go",
+      "line": 78
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).IsRet",
+      "file": "events/events.go",
+      "line": 74
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).FetchPid",
+      "file": "events/events.go",
+      "line": 70
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).FetchUid",
+      "file": "events/events.go",
+      "line": 66
+    },
+    {
+      "complexity": 1,
+      "package": "events",
+      "function": "(*eventBase).Print",
+      "file": "events/events.go",
+      "line": 62
+    },
+    {
+      "complexity": 1,
+      "package": "correlate",
+      "function": "findPid",
+      "file": "correlate/search.go",
+      "line": 22
+    },
+    {
+      "complexity": 1,
+      "package": "correlate",
+      "function": "findUid",
+      "file": "correlate/search.go",
+      "line": 16
+    },
+    {
+      "complexity": 1,
+      "package": "correlate",
+      "function": "findSession",
+      "file": "correlate/search.go",
+      "line": 11
+    },
+    {
+      "complexity": 1,
+      "package": "correlate",
+      "function": "CombineProc",
+      "file": "correlate/correlation.go",
+      "line": 13
+    },
+    {
+      "complexity": 1,
+      "package": "correlate",
+      "function": "Dedupe",
+      "file": "correlate/correlation.go",
+      "line": 9
+    },
+    {
+      "complexity": 1,
+      "package": "cmd",
+      "function": "init",
+      "file": "cmd/version.go",
+      "line": 28
+    },
+    {
+      "complexity": 1,
+      "package": "cmd",
+      "function": "init",
+      "file": "cmd/root.go",
+      "line": 38
+    },
+    {
+      "complexity": 1,
+      "package": "cmd",
+      "function": "init",
+      "file": "cmd/monitor.go",
+      "line": 22
+    },
+    {
+      "complexity": 1,
+      "package": "cmd",
+      "function": "init",
+      "file": "cmd/mitigate.go",
+      "line": 21
+    },
+    {
+      "complexity": 1,
+      "package": "cmd",
+      "function": "init",
+      "file": "cmd/hunt.go",
+      "line": 18
+    },
+    {
+      "complexity": 1,
+      "package": "ci",
+      "function": "readmePath",
+      "file": "ci/workflow_test.go",
+      "line": 221
+    },
+    {
+      "complexity": 1,
+      "package": "ci",
+      "function": "codecovConfigPath",
+      "file": "ci/workflow_test.go",
+      "line": 185
+    },
+    {
+      "complexity": 1,
+      "package": "ci",
+      "function": "branchProtectionPath",
+      "file": "ci/workflow_test.go",
+      "line": 26
+    },
+    {
+      "complexity": 1,
+      "package": "ci",
+      "function": "workflowPath",
+      "file": "ci/workflow_test.go",
+      "line": 21
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "Readline",
+      "file": "analysis/detections.go",
+      "line": 67
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "Open",
+      "file": "analysis/detections.go",
+      "line": 58
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "Listen",
+      "file": "analysis/detections.go",
+      "line": 52
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "Exec",
+      "file": "analysis/detections.go",
+      "line": 47
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "Log",
+      "file": "analysis/detections.go",
+      "line": 29
+    },
+    {
+      "complexity": 1,
+      "package": "analysis",
+      "function": "(*Detection).Print",
+      "file": "analysis/analysis.go",
+      "line": 18
+    }
+  ]
+}
