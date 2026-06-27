@@ -16,6 +16,12 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Verifies libbcc and kernel headers are present before completing provisioning
 - Added `test/integration/provision_test.go` validating shebang, strict mode, multi-distro support, BCC/Go setup, and `bash -n` syntax
 
+### Iteration 3 — harness.go test framework
+- Added `test/integration/harness.go` with `Harness` for eBPF load/collect, `ScanEvents` for technique validation, and skip helpers for integration/root guards
+- Added build-tag stubs in `harness_build.go` and `harness_integration.go` for `-tags=integration` detection
+- Added `harness_test.go` with synthetic event tests for L1002, L1005, and T1098 scanning paths
+- Added `harness_integration_test.go` verifying integration build tag wiring
+
 ## Current Status
 
-7 criteria remaining. Next: `test/integration/harness.go` test framework.
+5 criteria remaining. Next: example test cases for L1002, L1005, T1098.

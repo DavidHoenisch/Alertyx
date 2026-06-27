@@ -28,7 +28,7 @@ Test matrix:
 ## Deliverables
 - [x] `Vagrantfile` with multi-distro support
 - [x] `test/integration/provision.sh` for BCC setup
-- [ ] `test/integration/harness.go` test framework
+- [x] `test/integration/harness.go` test framework
 - [ ] Example test cases for L1002, L1005, T1098
 - [ ] Documentation for running integration tests
 
@@ -45,7 +45,7 @@ See ROADMAP.md Section 1.5
 
 - [x] `Vagrantfile` with multi-distro support
 - [x] `test/integration/provision.sh` for BCC setup
-- [ ] `test/integration/harness.go` test framework
+- [x] `test/integration/harness.go` test framework
 - [ ] Example test cases for L1002, L1005, T1098
 - [ ] Documentation for running integration tests
 
