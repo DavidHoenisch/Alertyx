@@ -20,3 +20,9 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Documented suspected high-CRAP functions with 0% function-level coverage: readEvents, AlertyxMonitor, processTechs, Summarize
 - Added `ci/coverage_baseline.go` with baseline loader and query helpers
 - Added `ci/coverage_baseline_test.go` validating baseline structure and coverage gaps
+
+### Iteration 3 - High-CRAP functions identified and tracked
+- Added `ci/crap-baseline.json` with CRAP scores for 4 suspected functions (2 high, 2 medium)
+- High-CRAP: AlertyxMonitor (462), readEvents (240); medium: processTechs (12), Summarize (6)
+- Added `ci/crap_baseline.go` with ComputeCRAP, CrapRiskLevel, and baseline query helpers
+- Added `ci/crap_baseline_test.go` validating formula, risk classification, and high-CRAP tracking

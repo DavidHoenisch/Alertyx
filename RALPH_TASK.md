@@ -39,7 +39,7 @@ go test -coverprofile=coverage.out ./...
 ## Acceptance Criteria
 - [x] gocyclo baseline documented
 - [x] Coverage baseline documented
-- [ ] High-CRAP functions identified and tracked
+- [x] High-CRAP functions identified and tracked
 - [ ] Refactoring plan for functions with CRAP > 30
 
 ## References
@@ -49,7 +49,7 @@ See ROADMAP.md Section 1.4
 
 - [x] gocyclo baseline documented
 - [x] Coverage baseline documented
-- [ ] High-CRAP functions identified and tracked
+- [x] High-CRAP functions identified and tracked
 - [ ] Refactoring plan for functions with CRAP > 30
 
 ## Notes
