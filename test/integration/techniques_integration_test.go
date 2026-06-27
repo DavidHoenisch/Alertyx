@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/events/bpf"
 	"github.com/DavidHoenisch/Alertyx/techs"
 )
 
@@ -19,7 +19,7 @@ func TestIntegrationL1005DetectsTmpWrite(t *testing.T) {
 	h := NewHarness(t)
 	defer h.Stop()
 
-	if err := h.Start(events.OpenBPF); err != nil {
+	if err := h.Start(bpf.OpenBPF); err != nil {
 		t.Fatalf("Start: %v", err)
 	}
 
@@ -42,7 +42,7 @@ func TestIntegrationL1002DetectsShadowAccess(t *testing.T) {
 	h := NewHarness(t)
 	defer h.Stop()
 
-	if err := h.Start(events.OpenBPF, events.ExecBPF); err != nil {
+	if err := h.Start(bpf.OpenBPF, bpf.ExecBPF); err != nil {
 		t.Fatalf("Start: %v", err)
 	}
 
@@ -64,7 +64,7 @@ func TestIntegrationT1098DetectsCrossUserAuthorizedKeysWrite(t *testing.T) {
 	h := NewHarness(t)
 	defer h.Stop()
 
-	if err := h.Start(events.OpenBPF); err != nil {
+	if err := h.Start(bpf.OpenBPF); err != nil {
 		t.Fatalf("Start: %v", err)
 	}
 
