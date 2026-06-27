@@ -25,6 +25,9 @@ func TestWriteEventDataExec(t *testing.T) {
 	if written.FetchPid() != 1234 {
 		t.Fatalf("Pid = %d", written.FetchPid())
 	}
+	if written.FetchPpid() != 1 {
+		t.Fatalf("Ppid = %d", written.FetchPpid())
+	}
 }
 
 func TestWriteEventDataListen(t *testing.T) {

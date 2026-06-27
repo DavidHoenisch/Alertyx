@@ -27,6 +27,7 @@ type Event interface {
 	Write([]byte) (Event, error)
 	FetchUid() uint32
 	FetchPid() uint32
+	FetchPpid() uint32
 	FetchPwd() string
 	FetchRetVal() int32
 	FetchOther() interface{}
@@ -76,6 +77,10 @@ func (e *eventBase) FetchUid() uint32 {
 
 func (e *eventBase) FetchPid() uint32 {
 	return e.Pid
+}
+
+func (e *eventBase) FetchPpid() uint32 {
+	return e.Ppid
 }
 
 func (e *eventBase) IsRet() bool {
