@@ -1,0 +1,58 @@
+{
+  "tool": "crap-refactoring-plan",
+  "generated": "2026-06-27",
+  "source": "ci/crap-baseline.json",
+  "crap_threshold": 30,
+  "target_crap": 30,
+  "plan_count": 2,
+  "functions": [
+    {
+      "package": "utils",
+      "function": "AlertyxMonitor",
+      "file": "utils/monitor.go",
+      "line": 14,
+      "current_crap_score": 462.0,
+      "current_complexity": 21,
+      "current_coverage": 0.0,
+      "priority": 1,
+      "strategy": "extract-subfunctions",
+      "summary": "Split the large select loop into focused helpers for module loading, event dispatch, and detection output.",
+      "steps": [
+        "Extract loadEBPFModules(evCtx, sourceList) to isolate goroutine startup and LoadWg coordination",
+        "Extract dispatchEvent(ev events.Event) ([]*analysis.Detection, error) for the type switch and analysis calls",
+        "Extract printEvent(ev events.Event) for ignore-list filtering and Event output",
+        "Extract handleDetections(detections []*analysis.Detection) for logging, artifact display, Clean, and Mitigate",
+        "Reduce the main select to channel routing only; delegate side effects to helpers",
+        "Add table-driven unit tests for dispatchEvent and handleDetections with mock Event and Detection values"
+      ],
+      "test_approach": "Unit-test extracted helpers with stub events and detections; integration test monitor startup/shutdown with mocked BPF sources",
+      "target_complexity": 8,
+      "target_coverage": 70.0,
+      "projected_crap_score": 9.7
+    },
+    {
+      "package": "events",
+      "function": "readEvents",
+      "file": "events/events.go",
+      "line": 176,
+      "current_crap_score": 240.0,
+      "current_complexity": 15,
+      "current_coverage": 0.0,
+      "priority": 2,
+      "strategy": "extract-state-machine",
+      "summary": "Encapsulate the perf-map event cache state machine and extract return-path handling into testable helpers.",
+      "steps": [
+        "Introduce eventReadState struct holding pwdCache, otherCache, and eventCache maps",
+        "Extract finalizeReturnEvent(state, event) Event for IsRet path: cache lookup, Exec comm merge, pwd/other attachment",
+        "Extract buildPwdPath(segments []string) string for pwd normalization and truncation",
+        "Extract cacheEntry(state, event) for IsPwd, IsOther, and default cache-insert branches",
+        "Keep readEvents as thin orchestration: perf map setup, goroutine loop calling state helpers, quit handling",
+        "Add unit tests for eventReadState transitions using mock Event implementations without eBPF"
+      ],
+      "test_approach": "Table-driven tests for cache transitions and pwd path building; defer eBPF perf-map tests to integration suite",
+      "target_complexity": 6,
+      "target_coverage": 70.0,
+      "projected_crap_score": 7.0
+    }
+  ]
+}

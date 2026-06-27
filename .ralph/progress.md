@@ -10,10 +10,6 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Added `ci/gocyclo_baseline.go` with baseline loader and query helpers
 - Added `ci/gocyclo_baseline_test.go` validating baseline structure and suspected high-complexity functions
 
-## Current Status
-
-1 criterion remaining: refactoring plan for functions with CRAP > 30.
-
 ### Iteration 2 - Coverage baseline documented
 - Added `ci/coverage-baseline.json` with package and function coverage snapshot (go cover, go1.26.3, 2.9% total, 70% target)
 - Only `ci` package has tests (80% coverage); 10 packages at 0% coverage
@@ -26,3 +22,14 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - High-CRAP: AlertyxMonitor (462), readEvents (240); medium: processTechs (12), Summarize (6)
 - Added `ci/crap_baseline.go` with ComputeCRAP, CrapRiskLevel, and baseline query helpers
 - Added `ci/crap_baseline_test.go` validating formula, risk classification, and high-CRAP tracking
+
+### Iteration 4 - Refactoring plan for functions with CRAP > 30
+- Added `ci/crap-refactoring-plan.json` with prioritized plans for AlertyxMonitor and readEvents
+- AlertyxMonitor: extract loadEBPFModules, dispatchEvent, printEvent, handleDetections (target CRAP 9.7)
+- readEvents: extract eventReadState, finalizeReturnEvent, buildPwdPath, cacheEntry (target CRAP 7.0)
+- Added `ci/crap_refactoring_plan.go` with plan loader and query helpers
+- Added `ci/crap_refactoring_plan_test.go` validating plan structure, baseline alignment, and projected scores
+
+## Current Status
+
+All acceptance criteria complete. Issue #4 CRAP analysis baseline is done.
