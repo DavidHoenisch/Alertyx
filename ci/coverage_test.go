@@ -76,7 +76,7 @@ func TestCoverageReport(t *testing.T) {
 	profilePath := filepath.Join(tmp, "coverage.out")
 	htmlPath := filepath.Join(tmp, "coverage.html")
 
-	targetPackages := []string{"./events/...", "./techs/..."}
+	targetPackages := []string{"./events", "./techs"}
 	output := runCoverageReport(t, root, profilePath, htmlPath, targetPackages...)
 
 	for _, pkg := range []string{"events", "techs"} {
