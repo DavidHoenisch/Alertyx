@@ -1,0 +1,12 @@
+# Mutation testing configuration for Alertyx detection logic.
+# Install: go install github.com/go-gremlins/gremlins/cmd/gremlins@latest
+# Run:     scripts/mutation-test.sh
+
+unleash:
+  tags: ""
+  coverpkg: "./techs/..."
+  output-statuses: lctr
+  timeout-coefficient: 30
+  threshold:
+    efficacy: 80
+    mutant-coverage: 80

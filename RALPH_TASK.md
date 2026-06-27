@@ -1,53 +1,51 @@
 ---
-task: "Issue #5: [Phase 1] Set up Vagrant-based integration testing"
+task: "Issue #3: [Phase 1] Set up mutation testing with gremlins"
 test_command: "go test -v ./..."
-github_issue: 5
+github_issue: 3
 ---
 
-# Issue #5: [Phase 1] Set up Vagrant-based integration testing
+# Issue #3: [Phase 1] Set up mutation testing with gremlins
 
-**Labels:** phase-1-testing,testing,infrastructure
+**Labels:** phase-1-testing,testing
 
 ## Task Description
 
 ## Overview
-Create VM-based integration test environment for testing eBPF programs against real kernels.
+Implement mutation testing to verify test quality beyond simple coverage metrics.
 
-## Why VMs?
-- eBPF requires real kernel access (can't be mocked)
-- Need to test across kernel versions (5.x, 6.x, 7.x)
-- Safe isolation for triggering "malicious" behaviors
+## Why Mutation Testing?
+- Coverage can be misleading (100% coverage with weak assertions)
+- Mutation testing reveals if tests actually catch bugs
+- Critical for security-sensitive detection logic
 
-## Vagrantfile Setup
-Test matrix:
-- Ubuntu 22.04 (Kernel 5.15) - LTS baseline
-- Ubuntu 24.04 (Kernel 6.8) - Current LTS
-- Fedora 40 (Kernel 6.8+) - Upstream tracking
-- Arch Linux (Kernel 7.x) - Bleeding edge
+## Target Packages
+| Package | Why |
+|---------|-----|
+| `techs/*.go` | Detection logic - false negatives are security issues |
+| `correlate/search.go` | Search predicates must be exact |
+| `analysis/analysis.go` | Detection scoring and deduplication |
 
-## Deliverables
-- [x] `Vagrantfile` with multi-distro support
-- [x] `test/integration/provision.sh` for BCC setup
-- [x] `test/integration/harness.go` test framework
-- [x] Example test cases for L1002, L1005, T1098
-- [x] Documentation for running integration tests
-
-## Commands
+## Setup
 ```bash
-vagrant up ubuntu-22
-vagrant ssh ubuntu-22 -c "cd /vagrant && sudo go test -tags=integration ./..."
+go install github.com/go-gremlins/gremlins/cmd/gremlins@latest
+gremlins unleash --tags="" ./techs/...
 ```
 
+## Acceptance Criteria
+- [x] gremlins configured and runnable
+- [x] >60% mutation score on `techs` package (initial target)
+- [x] >80% mutation score before Phase 1 complete
+- [x] Mutation testing in CI (on PRs to main)
+
 ## References
-See ROADMAP.md Section 1.5
+See ROADMAP.md Section 1.3
 
 ## Success Criteria
 
-- [x] `Vagrantfile` with multi-distro support
-- [x] `test/integration/provision.sh` for BCC setup
-- [x] `test/integration/harness.go` test framework
-- [x] Example test cases for L1002, L1005, T1098
-- [x] Documentation for running integration tests
+- [x] gremlins configured and runnable
+- [x] >60% mutation score on `techs` package (initial target)
+- [x] >80% mutation score before Phase 1 complete
+- [x] Mutation testing in CI (on PRs to main)
 
 ## Notes
 
