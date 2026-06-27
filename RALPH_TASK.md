@@ -35,7 +35,7 @@ gremlins unleash --tags="" ./techs/...
 - [x] gremlins configured and runnable
 - [x] >60% mutation score on `techs` package (initial target)
 - [x] >80% mutation score before Phase 1 complete
-- [ ] Mutation testing in CI (on PRs to main)
+- [x] Mutation testing in CI (on PRs to main)
 
 ## References
 See ROADMAP.md Section 1.3
@@ -45,7 +45,7 @@ See ROADMAP.md Section 1.3
 - [x] gremlins configured and runnable
 - [x] >60% mutation score on `techs` package (initial target)
 - [x] >80% mutation score before Phase 1 complete
-- [ ] Mutation testing in CI (on PRs to main)
+- [x] Mutation testing in CI (on PRs to main)
 
 ## Notes
 

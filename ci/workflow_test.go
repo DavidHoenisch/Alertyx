@@ -39,23 +39,32 @@ func readWorkflow(t *testing.T) string {
 
 func jobSection(content, jobName string) string {
 	startMarker := "  " + jobName + ":\n"
-	endMarker := "\n  test:\n"
-
 	start := strings.Index(content, startMarker)
 	if start == -1 {
 		return ""
 	}
 	start += len(startMarker)
 
-	if jobName == "test" {
-		return content[start:]
+	jobOrder := []string{"build", "test", "mutation"}
+	for i, name := range jobOrder {
+		if name != jobName {
+			continue
+		}
+		if i+1 >= len(jobOrder) {
+			return content[start:]
+		}
+		endMarker := "\n  " + jobOrder[i+1] + ":\n"
+		if !strings.Contains(content, endMarker) {
+			return content[start:]
+		}
+		end := strings.Index(content[start:], endMarker)
+		if end == -1 {
+			return content[start:]
+		}
+		return content[start : start+end]
 	}
 
-	end := strings.Index(content[start:], endMarker)
-	if end == -1 {
-		return content[start:]
-	}
-	return content[start : start+end]
+	return content[start:]
 }
 
 func TestWorkflowFileExists(t *testing.T) {
@@ -216,6 +225,72 @@ func TestWorkflowUploadsCoverageToCodecov(t *testing.T) {
 	if !strings.Contains(testJob, "files: ./coverage.out") {
 		t.Fatal("codecov upload must reference the generated coverage.out file")
 	}
+}
+
+func TestWorkflowHasMutationJobForPullRequestsToMain(t *testing.T) {
+	content := readWorkflow(t)
+	mutationJob := jobSection(content, "mutation")
+	if mutationJob == "" {
+		t.Fatal("workflow must define a mutation job for PR quality gates")
+	}
+	if !strings.Contains(mutationJob, "github.event_name == 'pull_request'") {
+		t.Fatal("mutation job must only run on pull_request events")
+	}
+	if !strings.Contains(mutationJob, "github.base_ref == 'main'") {
+		t.Fatal("mutation job must only run for pull requests targeting main")
+	}
+}
+
+func TestWorkflowMutationJobDependsOnTest(t *testing.T) {
+	content := readWorkflow(t)
+	mutationJob := jobSection(content, "mutation")
+	if mutationJob == "" {
+		t.Fatal("workflow must define a mutation job")
+	}
+	if !strings.Contains(mutationJob, "needs: test") {
+		t.Fatal("mutation job must need test so unit tests pass before mutation testing")
+	}
+}
+
+func TestWorkflowMutationJobInstallsGremlins(t *testing.T) {
+	content := readWorkflow(t)
+	mutationJob := jobSection(content, "mutation")
+	if mutationJob == "" {
+		t.Fatal("workflow must define a mutation job")
+	}
+	if !strings.Contains(mutationJob, "go install github.com/go-gremlins/gremlins/cmd/gremlins@latest") {
+		t.Fatal("mutation job must install gremlins before running mutation tests")
+	}
+}
+
+func TestWorkflowMutationJobRunsMutationTestScript(t *testing.T) {
+	content := readWorkflow(t)
+	mutationJob := jobSection(content, "mutation")
+	if mutationJob == "" {
+		t.Fatal("workflow must define a mutation job")
+	}
+	if !strings.Contains(mutationJob, "scripts/mutation-test.sh") {
+		t.Fatal("mutation job must run scripts/mutation-test.sh")
+	}
+}
+
+func TestWorkflowMutationJobHasNoContinueOnError(t *testing.T) {
+	content := readWorkflow(t)
+	mutationJob := jobSection(content, "mutation")
+	if mutationJob == "" {
+		t.Fatal("workflow must define a mutation job")
+	}
+	if strings.Contains(mutationJob, "continue-on-error: true") {
+		t.Fatal("mutation job must not use continue-on-error so threshold failures block merge")
+	}
+}
+
+func TestBranchProtectionRequiresMutationCheck(t *testing.T) {
+	cfg := branchProtectionConfig(t)
+	if !cfg.RequiredStatusChecks.Strict {
+		t.Fatal("branch protection must require branches to be up to date before merging")
+	}
+	hasRequiredCheck(t, cfg, "Test / mutation")
 }
 
 func readmePath(t *testing.T) string {
