@@ -1,0 +1,25 @@
+{
+  "required_status_checks": {
+    "strict": true,
+    "checks": [
+      {
+        "context": "Test / build",
+        "app_id": null
+      },
+      {
+        "context": "Test / test",
+        "app_id": null
+      }
+    ]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}

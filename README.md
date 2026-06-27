@@ -1,4 +1,6 @@
- # Alertyx
+# Alertyx
+
+[![Test](https://github.com/DavidHoenisch/Alertyx/actions/workflows/test.yml/badge.svg)](https://github.com/DavidHoenisch/Alertyx/actions/workflows/test.yml)
 
 `Alertyx` is a powerful tool designed to automatically detect and respond to malicious behavior on a Linux system using eBPF. This README provides an overview of the project, including setup instructions, usage guidelines, and credits.
 
