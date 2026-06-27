@@ -26,7 +26,7 @@ Test matrix:
 - Arch Linux (Kernel 7.x) - Bleeding edge
 
 ## Deliverables
-- [ ] `Vagrantfile` with multi-distro support
+- [x] `Vagrantfile` with multi-distro support
 - [ ] `test/integration/provision.sh` for BCC setup
 - [ ] `test/integration/harness.go` test framework
 - [ ] Example test cases for L1002, L1005, T1098
@@ -43,7 +43,7 @@ See ROADMAP.md Section 1.5
 
 ## Success Criteria
 
-- [ ] `Vagrantfile` with multi-distro support
+- [x] `Vagrantfile` with multi-distro support
 - [ ] `test/integration/provision.sh` for BCC setup
 - [ ] `test/integration/harness.go` test framework
 - [ ] Example test cases for L1002, L1005, T1098
