@@ -1,0 +1,54 @@
+{
+  "tool": "crap",
+  "generated": "2026-06-27",
+  "formula": "complexity^2 * (1 - coverage/100)^3 + complexity",
+  "sources": [
+    "ci/gocyclo-baseline.json",
+    "ci/coverage-baseline.json"
+  ],
+  "high_crap_count": 2,
+  "medium_crap_count": 2,
+  "low_crap_count": 0,
+  "functions": [
+    {
+      "package": "utils",
+      "function": "AlertyxMonitor",
+      "file": "utils/monitor.go",
+      "line": 14,
+      "complexity": 21,
+      "coverage": 0.0,
+      "crap_score": 462.0,
+      "risk_level": "high"
+    },
+    {
+      "package": "events",
+      "function": "readEvents",
+      "file": "events/events.go",
+      "line": 176,
+      "complexity": 15,
+      "coverage": 0.0,
+      "crap_score": 240.0,
+      "risk_level": "high"
+    },
+    {
+      "package": "analysis",
+      "function": "processTechs",
+      "file": "analysis/analysis.go",
+      "line": 38,
+      "complexity": 3,
+      "coverage": 0.0,
+      "crap_score": 12.0,
+      "risk_level": "medium"
+    },
+    {
+      "package": "correlate",
+      "function": "Summarize",
+      "file": "correlate/correlation.go",
+      "line": 18,
+      "complexity": 2,
+      "coverage": 0.0,
+      "crap_score": 6.0,
+      "risk_level": "medium"
+    }
+  ]
+}

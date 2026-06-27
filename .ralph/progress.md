@@ -12,7 +12,7 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Current Status
 
-2 criteria remaining: high-CRAP tracking, refactoring plan.
+1 criterion remaining: refactoring plan for functions with CRAP > 30.
 
 ### Iteration 2 - Coverage baseline documented
 - Added `ci/coverage-baseline.json` with package and function coverage snapshot (go cover, go1.26.3, 2.9% total, 70% target)
