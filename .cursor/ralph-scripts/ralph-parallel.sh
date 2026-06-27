@@ -306,8 +306,8 @@ while [[ $CURRENT_INDEX -lt $TOTAL_ISSUES ]] || [[ $ACTIVE_JOBS -gt 0 ]]; do
         JOB_BRANCHES[$JOB_ID]="ralph/$RUN_ID-$ISSUE_NUM"
         JOB_WORKTREES[$JOB_ID]="$WORKTREE_DIR/$RUN_ID-job$JOB_ID"
         
-        ((ACTIVE_JOBS++))
-        ((CURRENT_INDEX++))
+        ((ACTIVE_JOBS++)) || true
+        ((CURRENT_INDEX++)) || true
         
         # Small delay between starting jobs to avoid race conditions
         sleep 2
@@ -363,7 +363,7 @@ while [[ $CURRENT_INDEX -lt $TOTAL_ISSUES ]] || [[ $ACTIVE_JOBS -gt 0 ]]; do
                 unset 'JOB_ISSUES[$job_id]'
                 unset 'JOB_BRANCHES[$job_id]'
                 unset 'JOB_WORKTREES[$job_id]'
-                ((ACTIVE_JOBS--))
+                ((ACTIVE_JOBS--)) || true
             fi
         done
         
