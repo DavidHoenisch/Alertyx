@@ -36,7 +36,7 @@ func FuzzCStr(f *testing.F) {
 
 ## Acceptance Criteria
 - [x] Fuzz tests for `CStr()`
-- [ ] Fuzz tests for `WriteEventData()`
+- [x] Fuzz tests for `WriteEventData()`
 - [ ] No panics found during fuzz runs
 - [ ] Fuzz tests integrated into CI (time-limited)
 
@@ -46,7 +46,7 @@ See ROADMAP.md Section 1.2
 ## Success Criteria
 
 - [x] Fuzz tests for `CStr()`
-- [ ] Fuzz tests for `WriteEventData()`
+- [x] Fuzz tests for `WriteEventData()`
 - [ ] No panics found during fuzz runs
 - [ ] Fuzz tests integrated into CI (time-limited)
 
