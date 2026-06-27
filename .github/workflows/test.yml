@@ -17,6 +17,23 @@ jobs:
           sudo apt-get install -y linux-headers-$(uname -r) libbcc-dev libbpf-dev
       - run: go build ./...
 
+  fuzz:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Install BCC dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y linux-headers-$(uname -r) libbcc-dev libbpf-dev
+      - name: Run time-limited fuzz tests
+        env:
+          FUZZTIME: 10s
+        run: ./scripts/fuzz.sh
+
   test:
     needs: build
     runs-on: ubuntu-22.04

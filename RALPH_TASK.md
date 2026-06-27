@@ -1,42 +1,54 @@
 ---
-task: "Issue #1: [Phase 1] Set up unit test infrastructure with 70% coverage target"
+task: "Issue #2: [Phase 1] Implement fuzz testing for event parsing"
 test_command: "go test -v ./..."
-github_issue: 1
+github_issue: 2
 ---
 
-# Issue #1: [Phase 1] Set up unit test infrastructure with 70% coverage target
+# Issue #2: [Phase 1] Implement fuzz testing for event parsing
 
-**Labels:** phase-1-testing,priority-critical,testing
+**Labels:** phase-1-testing,security,testing
 
 ## Task Description
 
 ## Overview
-Establish baseline test coverage for core packages before making any code changes.
+Implement fuzz testing for code that parses untrusted kernel data.
 
-## Target Packages (Priority Order)
-| Package | Priority | Key Functions to Test |
-|---------|----------|----------------------|
-| `events` | Critical | `CStr()`, `WriteEventData()`, event `Write()` methods |
-| `techs` | Critical | All `Scan()` methods, `Name()` returns |
-| `correlate` | High | `search()`, `findUid()`, `findPid()`, `EventType()` |
-| `analysis` | High | `processTechs()`, `isDetectionDupe()` |
-| `output` | Medium | `IsIgnored()`, level routing |
+## Target Areas
+- `events/generics.go` - `WriteEventData()` binary parsing
+- `events/events.go` - `CStr()` C string conversion
+- `correlate/search.go` - search functions
+
+## Implementation
+Use Go's native fuzzing (Go 1.18+):
+
+```go
+func FuzzCStr(f *testing.F) {
+    f.Add([]byte("normal\x00string"))
+    f.Add([]byte{0x00})
+    f.Add([]byte{})
+    f.Add(make([]byte, 256))
+    
+    f.Fuzz(func(t *testing.T, data []byte) {
+        _ = CStr(data) // should never panic
+    })
+}
+```
 
 ## Acceptance Criteria
-- [x] 70%+ coverage on `events` package
-- [x] 70%+ coverage on `techs` package
-- [x] All tests pass with `go test ./...`
-- [ ] Coverage report generated
+- [x] Fuzz tests for `CStr()`
+- [x] Fuzz tests for `WriteEventData()`
+- [x] No panics found during fuzz runs
+- [x] Fuzz tests integrated into CI (time-limited)
 
 ## References
-See ROADMAP.md Section 1.1
+See ROADMAP.md Section 1.2
 
 ## Success Criteria
 
-- [x] 70%+ coverage on `events` package
-- [x] 70%+ coverage on `techs` package
-- [x] All tests pass with `go test ./...`
-- [ ] Coverage report generated
+- [x] Fuzz tests for `CStr()`
+- [x] Fuzz tests for `WriteEventData()`
+- [x] No panics found during fuzz runs
+- [x] Fuzz tests integrated into CI (time-limited)
 
 ## Notes
 

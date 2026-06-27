@@ -4,28 +4,27 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Completed Work
 
-### Iteration 1: events package unit tests (99.1% coverage)
+### Iteration 1
+- Added `FuzzCStr` in `events/events_fuzz_test.go` with seed corpus covering null-terminated strings, empty input, lone null byte, and 256-byte buffers
+- Verified with `go test ./...`
 
-- Added unit tests for `CStr()`, `WriteEventData()`, event `Write()` methods, `Print()` methods, and `EventProcessor`
-- Extracted eBPF event fragment merging into testable `EventProcessor` in `events/processor.go`
-- Moved eBPF loaders (`ExecBPF`, `OpenBPF`, `ListenBPF`, `ReadlineBPF`) to `events/bpf/` subpackage so unit coverage targets parseable event logic
-- Updated `utils/monitor.go` to import `events/bpf`
+### Iteration 2
+- Added `FuzzWriteEventData` in `events/events_fuzz_test.go` covering Exec, Listen, Open, and Readline event types
+- Seed corpus includes empty input, encoded zero-value structs, and oversized 512-byte buffers per event kind
+- Verified with `go test ./...`
+
+### Iteration 3
+- Verified `FuzzCStr` and `FuzzWriteEventData` with 30s+ fuzz runs (with and without `-race`); no panics found
+- Added `events/events_panic_test.go` with explicit regression tests for adversarial inputs (nil, truncated, oversized, high-byte C strings)
+- Added `scripts/fuzz.sh` for repeatable time-limited fuzz runs (`FUZZTIME` defaults to 30s per target)
+- Verified with `go test ./...` and `FUZZTIME=15s ./scripts/fuzz.sh`
+
+### Iteration 4
+- Added dedicated `fuzz` CI job in `.github/workflows/test.yml` running `./scripts/fuzz.sh` with `FUZZTIME=10s` per target
+- Updated `ci/workflow_test.go` with fuzz job validation tests and generalized `jobSection` for build/fuzz/test ordering
+- Added `Test / fuzz` to `ci/branch-protection.json` required status checks
+- Verified with `go test ./...` and `FUZZTIME=5s ./scripts/fuzz.sh`
 
 ## Current Status
 
-- events package: 99.1% coverage (target: 70%+)
-- techs package: 97.8% coverage (target: 70%+)
-- Remaining criteria: coverage report
-
-### Iteration 2: techs package unit tests (97.8% coverage)
-
-- Added `techs/techs_test.go` with table-driven tests for all techniques
-- Covered `All()`, `techBase` defaults, every `Name()` and `Scan()` method
-- Exercised `L1001.Clean()`, `L1002.Check()`/`Mitigate()`, and `T1098` owner/permission branches
-- Used short `/tmp/authorized_keys_test` paths so Open filename field (80 bytes) is not truncated
-
-### Iteration 3: all tests pass with go test ./...
-
-- Verified full suite passes with `go test ./...` (events, techs, ci packages)
-- Added `ci/all_test.go` with `TestAllPackagesPass` that runs `go test ./...` from repo root
-- Uses `ALERTYX_FULL_SUITE` env guard to avoid recursive subprocess invocation
+All four criteria complete. Issue #2 fuzz testing work is done.
