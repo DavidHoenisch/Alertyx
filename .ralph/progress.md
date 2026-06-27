@@ -22,6 +22,13 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Added `harness_test.go` with synthetic event tests for L1002, L1005, and T1098 scanning paths
 - Added `harness_integration_test.go` verifying integration build tag wiring
 
+### Iteration 4 — Example test cases for L1002, L1005, T1098
+- Added `test/integration/techniques_integration_test.go` with live eBPF integration examples using `Harness.RunAndWait`:
+  - L1005: detects writes under `/tmp`
+  - L1002: detects non-privileged `/etc/shadow` access via `head` with Open+Exec probes
+  - T1098: detects cross-user `authorized_keys` modification (root writing to nobody-owned file)
+- Added `test/integration/techniques_test.go` validating example test file structure and technique coverage without requiring `-tags=integration`
+
 ## Current Status
 
-5 criteria remaining. Next: example test cases for L1002, L1005, T1098.
+1 criterion remaining. Next: documentation for running integration tests.
