@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/DavidHoenisch/Alertyx/events"
+	"github.com/DavidHoenisch/Alertyx/events/bpf"
 	"github.com/DavidHoenisch/Alertyx/techs"
 )
 
@@ -140,7 +141,7 @@ func NewHarness(t *testing.T) *Harness {
 // Start loads the given eBPF sources. OpenBPF is used when sources is empty.
 func (h *Harness) Start(sources ...func(chan events.Event, events.Ctx)) error {
 	if len(sources) == 0 {
-		sources = []func(chan events.Event, events.Ctx){events.OpenBPF}
+		sources = []func(chan events.Event, events.Ctx){bpf.OpenBPF}
 	}
 
 	h.sourceCount = len(sources)
