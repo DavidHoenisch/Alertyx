@@ -8,6 +8,7 @@ import (
 	"github.com/DavidHoenisch/Alertyx/analysis"
 	"github.com/DavidHoenisch/Alertyx/common"
 	"github.com/DavidHoenisch/Alertyx/events"
+	evbpf "github.com/DavidHoenisch/Alertyx/events/bpf"
 	"github.com/DavidHoenisch/Alertyx/output"
 )
 
@@ -24,10 +25,10 @@ func AlertyxMonitor() {
 
 	// List of implemented sources
 	sourceList := []func(chan events.Event, events.Ctx){
-		events.ExecBPF,
-		events.ListenBPF,
-		events.OpenBPF,
-		events.ReadlineBPF,
+		evbpf.ExecBPF,
+		evbpf.ListenBPF,
+		evbpf.OpenBPF,
+		evbpf.ReadlineBPF,
 	}
 
 	// Load each eBPF module
