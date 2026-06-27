@@ -14,4 +14,12 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 ## Current Status
 
 - events package: 99.1% coverage (target: 70%+)
-- Remaining criteria: techs coverage, all tests pass, coverage report
+- techs package: 97.8% coverage (target: 70%+)
+- Remaining criteria: all tests pass, coverage report
+
+### Iteration 2: techs package unit tests (97.8% coverage)
+
+- Added `techs/techs_test.go` with table-driven tests for all techniques
+- Covered `All()`, `techBase` defaults, every `Name()` and `Scan()` method
+- Exercised `L1001.Clean()`, `L1002.Check()`/`Mitigate()`, and `T1098` owner/permission branches
+- Used short `/tmp/authorized_keys_test` paths so Open filename field (80 bytes) is not truncated
