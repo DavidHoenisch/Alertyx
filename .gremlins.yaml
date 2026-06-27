@@ -7,5 +7,5 @@ unleash:
   coverpkg: "./techs/..."
   output-statuses: lctr
   threshold:
-    efficacy: 0
-    mutant-coverage: 0
+    efficacy: 0.6
+    mutant-coverage: 0.6

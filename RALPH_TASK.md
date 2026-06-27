@@ -33,7 +33,7 @@ gremlins unleash --tags="" ./techs/...
 
 ## Acceptance Criteria
 - [x] gremlins configured and runnable
-- [ ] >60% mutation score on `techs` package (initial target)
+- [x] >60% mutation score on `techs` package (initial target)
 - [ ] >80% mutation score before Phase 1 complete
 - [ ] Mutation testing in CI (on PRs to main)
 
@@ -43,7 +43,7 @@ See ROADMAP.md Section 1.3
 ## Success Criteria
 
 - [x] gremlins configured and runnable
-- [ ] >60% mutation score on `techs` package (initial target)
+- [x] >60% mutation score on `techs` package (initial target)
 - [ ] >80% mutation score before Phase 1 complete
 - [ ] Mutation testing in CI (on PRs to main)
 
