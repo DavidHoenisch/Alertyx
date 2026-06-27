@@ -47,6 +47,6 @@ func (t L1002) Check() (Finding, error) {
 }
 
 func (t L1002) Mitigate() error {
-	err := os.Chmod("/etc/shadow", 644)
+	err := os.Chmod("/etc/shadow", 0640)
 	return err
 }
