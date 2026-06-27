@@ -37,21 +37,29 @@ func readWorkflow(t *testing.T) string {
 	return string(data)
 }
 
+var workflowJobs = []string{"build", "fuzz", "test"}
+
 func jobSection(content, jobName string) string {
 	startMarker := "  " + jobName + ":\n"
-	endMarker := "\n  test:\n"
-
 	start := strings.Index(content, startMarker)
 	if start == -1 {
 		return ""
 	}
 	start += len(startMarker)
 
-	if jobName == "test" {
+	jobIdx := -1
+	for i, name := range workflowJobs {
+		if name == jobName {
+			jobIdx = i
+			break
+		}
+	}
+	if jobIdx == -1 || jobIdx == len(workflowJobs)-1 {
 		return content[start:]
 	}
 
-	end := strings.Index(content[start:], endMarker)
+	nextMarker := "\n  " + workflowJobs[jobIdx+1] + ":\n"
+	end := strings.Index(content[start:], nextMarker)
 	if end == -1 {
 		return content[start:]
 	}
@@ -180,6 +188,58 @@ func TestBranchProtectionRequiresTestCheck(t *testing.T) {
 		t.Fatal("branch protection must require branches to be up to date before merging")
 	}
 	hasRequiredCheck(t, cfg, "Test / test")
+}
+
+func TestWorkflowHasDedicatedFuzzJob(t *testing.T) {
+	content := readWorkflow(t)
+	fuzzJob := jobSection(content, "fuzz")
+	if fuzzJob == "" {
+		t.Fatal("workflow must define a dedicated fuzz job")
+	}
+	if !strings.Contains(fuzzJob, "./scripts/fuzz.sh") {
+		t.Fatal("fuzz job must run scripts/fuzz.sh for time-limited fuzz testing")
+	}
+}
+
+func TestWorkflowFuzzJobDependsOnBuild(t *testing.T) {
+	content := readWorkflow(t)
+	fuzzJob := jobSection(content, "fuzz")
+	if fuzzJob == "" {
+		t.Fatal("workflow must define a fuzz job")
+	}
+	if !strings.Contains(fuzzJob, "needs: build") {
+		t.Fatal("fuzz job must need build so build failures fail the workflow before fuzz runs")
+	}
+}
+
+func TestWorkflowFuzzJobHasNoContinueOnError(t *testing.T) {
+	content := readWorkflow(t)
+	fuzzJob := jobSection(content, "fuzz")
+	if fuzzJob == "" {
+		t.Fatal("workflow must define a fuzz job")
+	}
+	if strings.Contains(fuzzJob, "continue-on-error: true") {
+		t.Fatal("fuzz job must not use continue-on-error so panics block merge")
+	}
+}
+
+func TestWorkflowFuzzJobUsesTimeLimit(t *testing.T) {
+	content := readWorkflow(t)
+	fuzzJob := jobSection(content, "fuzz")
+	if fuzzJob == "" {
+		t.Fatal("workflow must define a fuzz job")
+	}
+	if !strings.Contains(fuzzJob, "FUZZTIME:") {
+		t.Fatal("fuzz job must set FUZZTIME so CI fuzz runs are time-limited")
+	}
+}
+
+func TestBranchProtectionRequiresFuzzCheck(t *testing.T) {
+	cfg := branchProtectionConfig(t)
+	if !cfg.RequiredStatusChecks.Strict {
+		t.Fatal("branch protection must require branches to be up to date before merging")
+	}
+	hasRequiredCheck(t, cfg, "Test / fuzz")
 }
 
 func codecovConfigPath(t *testing.T) string {

@@ -38,7 +38,7 @@ func FuzzCStr(f *testing.F) {
 - [x] Fuzz tests for `CStr()`
 - [x] Fuzz tests for `WriteEventData()`
 - [x] No panics found during fuzz runs
-- [ ] Fuzz tests integrated into CI (time-limited)
+- [x] Fuzz tests integrated into CI (time-limited)
 
 ## References
 See ROADMAP.md Section 1.2
@@ -48,7 +48,7 @@ See ROADMAP.md Section 1.2
 - [x] Fuzz tests for `CStr()`
 - [x] Fuzz tests for `WriteEventData()`
 - [x] No panics found during fuzz runs
-- [ ] Fuzz tests integrated into CI (time-limited)
+- [x] Fuzz tests integrated into CI (time-limited)
 
 ## Notes
 

@@ -19,7 +19,12 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 - Added `scripts/fuzz.sh` for repeatable time-limited fuzz runs (`FUZZTIME` defaults to 30s per target)
 - Verified with `go test ./...` and `FUZZTIME=15s ./scripts/fuzz.sh`
 
+### Iteration 4
+- Added dedicated `fuzz` CI job in `.github/workflows/test.yml` running `./scripts/fuzz.sh` with `FUZZTIME=10s` per target
+- Updated `ci/workflow_test.go` with fuzz job validation tests and generalized `jobSection` for build/fuzz/test ordering
+- Added `Test / fuzz` to `ci/branch-protection.json` required status checks
+- Verified with `go test ./...` and `FUZZTIME=5s ./scripts/fuzz.sh`
+
 ## Current Status
 
-Three of four criteria complete: fuzz tests for `CStr()`, `WriteEventData()`, and panic-free fuzz runs.
-Remaining: CI integration (time-limited).
+All four criteria complete. Issue #2 fuzz testing work is done.
