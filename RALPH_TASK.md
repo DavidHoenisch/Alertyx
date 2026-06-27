@@ -1,56 +1,53 @@
 ---
-task: "Issue #4: [Phase 1] Implement CRAP analysis baseline"
+task: "Issue #5: [Phase 1] Set up Vagrant-based integration testing"
 test_command: "go test -v ./..."
-github_issue: 4
+github_issue: 5
 ---
 
-# Issue #4: [Phase 1] Implement CRAP analysis baseline
+# Issue #5: [Phase 1] Set up Vagrant-based integration testing
 
-**Labels:** phase-1-testing,testing
+**Labels:** phase-1-testing,testing,infrastructure
 
 ## Task Description
 
 ## Overview
-Establish CRAP (Change Risk Anti-Patterns) analysis to identify high-risk, undertested code.
+Create VM-based integration test environment for testing eBPF programs against real kernels.
 
-## Formula
-`CRAP(m) = complexity(m)^2 * (1 - coverage(m)/100)^3 + complexity(m)`
+## Why VMs?
+- eBPF requires real kernel access (can't be mocked)
+- Need to test across kernel versions (5.x, 6.x, 7.x)
+- Safe isolation for triggering "malicious" behaviors
 
-## Interpretation
-| CRAP Score | Risk Level | Action |
-|------------|------------|--------|
-| < 5 | Low | Acceptable |
-| 5-30 | Medium | Consider refactoring or adding tests |
-| > 30 | High | Priority refactor |
+## Vagrantfile Setup
+Test matrix:
+- Ubuntu 22.04 (Kernel 5.15) - LTS baseline
+- Ubuntu 24.04 (Kernel 6.8) - Current LTS
+- Fedora 40 (Kernel 6.8+) - Upstream tracking
+- Arch Linux (Kernel 7.x) - Bleeding edge
 
-## Suspected High-CRAP Functions
-- `events/events.go:readEvents()` - complex state machine
-- `utils/monitor.go:AlertyxMonitor()` - large select loop
-- `analysis/analysis.go:processTechs()` - detection pipeline
-- `correlate/correlation.go:Summarize()` - event filtering
+## Deliverables
+- [x] `Vagrantfile` with multi-distro support
+- [x] `test/integration/provision.sh` for BCC setup
+- [x] `test/integration/harness.go` test framework
+- [x] Example test cases for L1002, L1005, T1098
+- [x] Documentation for running integration tests
 
-## Tools
+## Commands
 ```bash
-go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-gocyclo -over 10 .
-go test -coverprofile=coverage.out ./...
+vagrant up ubuntu-22
+vagrant ssh ubuntu-22 -c "cd /vagrant && sudo go test -tags=integration ./..."
 ```
 
-## Acceptance Criteria
-- [x] gocyclo baseline documented
-- [x] Coverage baseline documented
-- [x] High-CRAP functions identified and tracked
-- [x] Refactoring plan for functions with CRAP > 30
-
 ## References
-See ROADMAP.md Section 1.4
+See ROADMAP.md Section 1.5
 
 ## Success Criteria
 
-- [x] gocyclo baseline documented
-- [x] Coverage baseline documented
-- [x] High-CRAP functions identified and tracked
-- [x] Refactoring plan for functions with CRAP > 30
+- [x] `Vagrantfile` with multi-distro support
+- [x] `test/integration/provision.sh` for BCC setup
+- [x] `test/integration/harness.go` test framework
+- [x] Example test cases for L1002, L1005, T1098
+- [x] Documentation for running integration tests
 
 ## Notes
 

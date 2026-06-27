@@ -4,32 +4,35 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Completed Work
 
-### Iteration 1 - gocyclo baseline documented
-- Added `ci/gocyclo-baseline.json` with cyclomatic complexity snapshot for 133 functions (gocyclo 0.6.0, threshold 10)
-- Two functions exceed threshold: `AlertyxMonitor` (21) and `readEvents` (15)
-- Added `ci/gocyclo_baseline.go` with baseline loader and query helpers
-- Added `ci/gocyclo_baseline_test.go` validating baseline structure and suspected high-complexity functions
+### Iteration 1 — Vagrantfile with multi-distro support
+- Added `Vagrantfile` with four VM definitions: ubuntu-22 (jammy), ubuntu-24 (noble), fedora-40, arch
+- Each VM syncs repo to `/vagrant`, provisions via `test/integration/provision.sh`, and uses VirtualBox with 2 CPU / 2GB RAM
+- Added `test/integration/vagrantfile_test.go` validating VM matrix, boxes, synced folder, and provision path
+- Added `.vagrant/` to `.gitignore`
 
-### Iteration 2 - Coverage baseline documented
-- Added `ci/coverage-baseline.json` with package and function coverage snapshot (go cover, go1.26.3, 2.9% total, 70% target)
-- Only `ci` package has tests (80% coverage); 10 packages at 0% coverage
-- Documented suspected high-CRAP functions with 0% function-level coverage: readEvents, AlertyxMonitor, processTechs, Summarize
-- Added `ci/coverage_baseline.go` with baseline loader and query helpers
-- Added `ci/coverage_baseline_test.go` validating baseline structure and coverage gaps
+### Iteration 2 — provision.sh for BCC setup
+- Added `test/integration/provision.sh` with distro-specific package installs for Ubuntu/Debian (apt), Fedora (dnf), and Arch (pacman)
+- Installs BCC runtime/dev packages, kernel headers, clang/llvm, and Go 1.22 when the distro package is too old
+- Verifies libbcc and kernel headers are present before completing provisioning
+- Added `test/integration/provision_test.go` validating shebang, strict mode, multi-distro support, BCC/Go setup, and `bash -n` syntax
 
-### Iteration 3 - High-CRAP functions identified and tracked
-- Added `ci/crap-baseline.json` with CRAP scores for 4 suspected functions (2 high, 2 medium)
-- High-CRAP: AlertyxMonitor (462), readEvents (240); medium: processTechs (12), Summarize (6)
-- Added `ci/crap_baseline.go` with ComputeCRAP, CrapRiskLevel, and baseline query helpers
-- Added `ci/crap_baseline_test.go` validating formula, risk classification, and high-CRAP tracking
+### Iteration 3 — harness.go test framework
+- Added `test/integration/harness.go` with `Harness` for eBPF load/collect, `ScanEvents` for technique validation, and skip helpers for integration/root guards
+- Added build-tag stubs in `harness_build.go` and `harness_integration.go` for `-tags=integration` detection
+- Added `harness_test.go` with synthetic event tests for L1002, L1005, and T1098 scanning paths
+- Added `harness_integration_test.go` verifying integration build tag wiring
 
-### Iteration 4 - Refactoring plan for functions with CRAP > 30
-- Added `ci/crap-refactoring-plan.json` with prioritized plans for AlertyxMonitor and readEvents
-- AlertyxMonitor: extract loadEBPFModules, dispatchEvent, printEvent, handleDetections (target CRAP 9.7)
-- readEvents: extract eventReadState, finalizeReturnEvent, buildPwdPath, cacheEntry (target CRAP 7.0)
-- Added `ci/crap_refactoring_plan.go` with plan loader and query helpers
-- Added `ci/crap_refactoring_plan_test.go` validating plan structure, baseline alignment, and projected scores
+### Iteration 4 — Example test cases for L1002, L1005, T1098
+- Added `test/integration/techniques_integration_test.go` with live eBPF integration examples using `Harness.RunAndWait`:
+  - L1005: detects writes under `/tmp`
+  - L1002: detects non-privileged `/etc/shadow` access via `head` with Open+Exec probes
+  - T1098: detects cross-user `authorized_keys` modification (root writing to nobody-owned file)
+- Added `test/integration/techniques_test.go` validating example test file structure and technique coverage without requiring `-tags=integration`
+
+### Iteration 5 — Documentation for running integration tests
+- Added `test/integration/README.md` covering prerequisites, VM matrix, quick start, per-VM workflows, test commands, harness overview, and troubleshooting
+- Added `test/integration/docs_test.go` validating README presence and required sections/commands
 
 ## Current Status
 
-All acceptance criteria complete. Issue #4 CRAP analysis baseline is done.
+All criteria complete. Issue #5 deliverables finished.
