@@ -55,6 +55,16 @@ func TestGremlinsConfigDefinesThresholds(t *testing.T) {
 	if !strings.Contains(content, "efficacy:") || !strings.Contains(content, "mutant-coverage:") {
 		t.Fatal("gremlins config must define efficacy and mutant-coverage thresholds")
 	}
+	if !strings.Contains(content, "mutant-coverage: 80") {
+		t.Fatal("gremlins config must set mutant-coverage threshold to 80 for Phase 1")
+	}
+}
+
+func TestGremlinsConfigSetsTimeoutCoefficient(t *testing.T) {
+	content := readGremlinsConfig(t)
+	if !strings.Contains(content, "timeout-coefficient:") {
+		t.Fatal("gremlins config must set unleash.timeout-coefficient so mutation runs do not time out")
+	}
 }
 
 func TestMutationTestScriptExists(t *testing.T) {

@@ -2,6 +2,7 @@ package techs
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"syscall"
 	"testing"
@@ -11,6 +12,38 @@ import (
 
 func openFlags(flag int) int32 {
 	return int32(flag)
+}
+
+func TestL1001Clean(t *testing.T) {
+	tech := L1001{}
+
+	t.Run("no listen events returns error", func(t *testing.T) {
+		err := tech.Clean(events.NewListen(88001, 88002))
+		if err == nil {
+			t.Fatal("expected error when no related listen events exist")
+		}
+	})
+
+	t.Run("kills pid from latest related listen event", func(t *testing.T) {
+		cmd := exec.Command("sleep", "30")
+		if err := cmd.Start(); err != nil {
+			t.Fatalf("start sleep helper: %v", err)
+		}
+		defer func() {
+			_ = cmd.Process.Kill()
+			_ = cmd.Wait()
+		}()
+
+		uid := uint32(88004)
+		pid := uint32(cmd.Process.Pid)
+		events.Log(events.NewListen(uid, pid))
+		if err := tech.Clean(events.NewListen(uid, pid+1)); err != nil {
+			t.Fatalf("Clean() unexpected error: %v", err)
+		}
+		if err := cmd.Wait(); err == nil {
+			t.Fatal("expected sleep process to be terminated by Clean()")
+		}
+	})
 }
 
 func TestL1001Scan(t *testing.T) {

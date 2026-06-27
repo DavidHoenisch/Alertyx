@@ -6,6 +6,7 @@ unleash:
   tags: ""
   coverpkg: "./techs/..."
   output-statuses: lctr
+  timeout-coefficient: 30
   threshold:
-    efficacy: 0.6
-    mutant-coverage: 0.6
+    efficacy: 80
+    mutant-coverage: 80
