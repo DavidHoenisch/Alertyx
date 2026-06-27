@@ -30,7 +30,7 @@ Test matrix:
 - [x] `test/integration/provision.sh` for BCC setup
 - [x] `test/integration/harness.go` test framework
 - [x] Example test cases for L1002, L1005, T1098
-- [ ] Documentation for running integration tests
+- [x] Documentation for running integration tests
 
 ## Commands
 ```bash
@@ -47,7 +47,7 @@ See ROADMAP.md Section 1.5
 - [x] `test/integration/provision.sh` for BCC setup
 - [x] `test/integration/harness.go` test framework
 - [x] Example test cases for L1002, L1005, T1098
-- [ ] Documentation for running integration tests
+- [x] Documentation for running integration tests
 
 ## Notes
 

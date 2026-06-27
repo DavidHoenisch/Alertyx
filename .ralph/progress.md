@@ -29,6 +29,10 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
   - T1098: detects cross-user `authorized_keys` modification (root writing to nobody-owned file)
 - Added `test/integration/techniques_test.go` validating example test file structure and technique coverage without requiring `-tags=integration`
 
+### Iteration 5 — Documentation for running integration tests
+- Added `test/integration/README.md` covering prerequisites, VM matrix, quick start, per-VM workflows, test commands, harness overview, and troubleshooting
+- Added `test/integration/docs_test.go` validating README presence and required sections/commands
+
 ## Current Status
 
-1 criterion remaining. Next: documentation for running integration tests.
+All criteria complete. Issue #5 deliverables finished.
