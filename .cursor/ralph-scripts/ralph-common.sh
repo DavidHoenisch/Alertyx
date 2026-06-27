@@ -211,13 +211,20 @@ prompt_input() {
     fi
 }
 
-# Confirm action (with gum if available)
+# Confirm action (with gum if available). Honors RALPH_SKIP_CONFIRM=1.
 confirm() {
     local prompt="$1"
+
+    if [[ "${RALPH_SKIP_CONFIRM:-}" == "1" || "${RALPH_SKIP_CONFIRM:-}" == "true" ]]; then
+        return 0
+    fi
     
     if has_gum; then
         gum confirm "$prompt"
     else
+        if [[ ! -t 0 ]]; then
+            return 0
+        fi
         read -p "$prompt [y/N]: " response
         [[ "$response" =~ ^[Yy] ]]
     fi

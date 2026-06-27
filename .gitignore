@@ -5,11 +5,16 @@ Alertyx
 # Ralph worktrees (temporary, created during parallel runs)
 .ralph-worktrees/
 
-# Ralph logs (optional - remove this line if you want to track logs)
-.ralph/parallel/
+# Per-run agent state (do not commit)
+RALPH_TASK.md
+RALPH_TASK.md.bak
+.ralph/progress.md
 .ralph/activity.log
 .ralph/errors.log
 .ralph/.iteration
+
+# Ralph logs (optional - remove this line if you want to track logs)
+.ralph/parallel/
 
 # Editor/IDE
 .idea/
@@ -17,6 +22,10 @@ Alertyx
 *.swp
 *.swo
 *~
+
+# Test artifacts
+coverage.out
+coverage.html
 
 # Vagrant
 .vagrant/

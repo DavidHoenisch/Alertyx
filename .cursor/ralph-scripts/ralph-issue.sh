@@ -11,6 +11,7 @@ source "$SCRIPT_DIR/ralph-common.sh"
 ISSUE_NUMBER=""
 PHASE=""
 LIST_ONLY=false
+SKIP_CONFIRM=false
 
 print_usage() {
     echo "Usage: ralph-issue.sh [options]"
@@ -19,6 +20,7 @@ print_usage() {
     echo "  -i, --issue NUMBER    Load specific issue by number"
     echo "  -p, --phase PHASE     Load issues from phase (1-6)"
     echo "  -l, --list            List available issues without loading"
+    echo "  -y, --yes             Overwrite existing RALPH_TASK.md without prompting"
     echo "  -h, --help            Show this help"
     echo ""
     echo "Examples:"
@@ -33,6 +35,7 @@ while [[ $# -gt 0 ]]; do
         -i|--issue) ISSUE_NUMBER="$2"; shift 2 ;;
         -p|--phase) PHASE="$2"; shift 2 ;;
         -l|--list) LIST_ONLY=true; shift ;;
+        -y|--yes) SKIP_CONFIRM=true; shift ;;
         -h|--help) print_usage; exit 0 ;;
         *) log_error "Unknown option: $1"; print_usage; exit 1 ;;
     esac
@@ -189,12 +192,13 @@ fi
 
 # Check if RALPH_TASK.md already exists
 if [[ -f "$TASK_FILE" ]]; then
-    log_warn "RALPH_TASK.md already exists"
-    if ! confirm "Overwrite?"; then
-        log_info "Aborted"
-        exit 0
+    if [[ "$SKIP_CONFIRM" != "true" ]]; then
+        log_warn "RALPH_TASK.md already exists"
+        if ! confirm "Overwrite?"; then
+            log_info "Aborted"
+            exit 0
+        fi
     fi
-    # Backup existing
     mv "$TASK_FILE" "$TASK_FILE.bak"
     log_info "Backed up to $TASK_FILE.bak"
 fi

@@ -251,7 +251,7 @@ run_agent() {
         # Load issue in worktree
         echo "[Job $job_id] Loading issue #$issue_num..."
         cd "$worktree_path"
-        if ! "$worktree_path/.cursor/ralph-scripts/ralph-issue.sh" --issue "$issue_num" 2>&1; then
+        if ! RALPH_SKIP_CONFIRM=1 "$worktree_path/.cursor/ralph-scripts/ralph-issue.sh" --issue "$issue_num" -y 2>&1; then
             echo "[Job $job_id] ERROR: Failed to load issue"
             cd "$REPO_ROOT"
             return 1
