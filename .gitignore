@@ -21,6 +21,9 @@ Alertyx
 # Vagrant
 .vagrant/
 
+# Agentic security MCP scanner artifacts
+.agentic-security/
+
 # OS
 .DS_Store
 Thumbs.db
