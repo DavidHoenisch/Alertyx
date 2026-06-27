@@ -12,4 +12,11 @@ This file tracks progress across Ralph iterations. Updated by the agent after ea
 
 ## Current Status
 
-3 criteria remaining: coverage baseline, high-CRAP tracking, refactoring plan.
+2 criteria remaining: high-CRAP tracking, refactoring plan.
+
+### Iteration 2 - Coverage baseline documented
+- Added `ci/coverage-baseline.json` with package and function coverage snapshot (go cover, go1.26.3, 2.9% total, 70% target)
+- Only `ci` package has tests (80% coverage); 10 packages at 0% coverage
+- Documented suspected high-CRAP functions with 0% function-level coverage: readEvents, AlertyxMonitor, processTechs, Summarize
+- Added `ci/coverage_baseline.go` with baseline loader and query helpers
+- Added `ci/coverage_baseline_test.go` validating baseline structure and coverage gaps
