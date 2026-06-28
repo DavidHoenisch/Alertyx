@@ -1,0 +1,28 @@
+# /etc/systemd/system/alertyx.service
+[Unit]
+Description=Alertyx eBPF-based Linux EDR
+Documentation=https://github.com/DavidHoenisch/Alertyx
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/alertyx monitor --syslog
+Restart=always
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=no
+CapabilityBoundingSet=CAP_BPF CAP_PERFMON CAP_SYS_ADMIN CAP_SYS_RESOURCE
+AmbientCapabilities=CAP_BPF CAP_PERFMON CAP_SYS_ADMIN CAP_SYS_RESOURCE
+
+# Resource limits
+MemoryMax=512M
+CPUQuota=50%
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=alertyx
+
+[Install]
+WantedBy=multi-user.target
