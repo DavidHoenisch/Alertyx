@@ -3,6 +3,7 @@ package techs
 import (
 	"container/ring"
 	"os"
+	"path/filepath"
 	"syscall"
 	"testing"
 
@@ -511,6 +512,128 @@ func TestT1547Scan(t *testing.T) {
 			}
 			if got.Level != tt.level {
 				t.Fatalf("Scan() Level = %d, want %d", got.Level, tt.level)
+			}
+		})
+	}
+}
+
+func setupT1547HuntFixture(t *testing.T, release string, dep string, koFiles map[string][]byte, autoload map[string]string) {
+	t.Helper()
+
+	root := t.TempDir()
+	libModules := filepath.Join(root, "lib", "modules", release)
+	if err := os.MkdirAll(filepath.Join(libModules, "kernel", "drivers"), 0755); err != nil {
+		t.Fatalf("MkdirAll() error: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(libModules, "modules.dep"), []byte(dep), 0644); err != nil {
+		t.Fatalf("WriteFile(modules.dep) error: %v", err)
+	}
+	for rel, content := range koFiles {
+		path := filepath.Join(libModules, rel)
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			t.Fatalf("MkdirAll(%q) error: %v", path, err)
+		}
+		if err := os.WriteFile(path, content, 0644); err != nil {
+			t.Fatalf("WriteFile(%q) error: %v", path, err)
+		}
+	}
+
+	modulesLoadDir := filepath.Join(root, "etc", "modules-load.d")
+	if err := os.MkdirAll(modulesLoadDir, 0755); err != nil {
+		t.Fatalf("MkdirAll() error: %v", err)
+	}
+	for name, content := range autoload {
+		path := filepath.Join(modulesLoadDir, name)
+		if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+			t.Fatalf("WriteFile(%q) error: %v", path, err)
+		}
+	}
+	etcModules := filepath.Join(root, "etc", "modules")
+	if err := os.WriteFile(etcModules, nil, 0644); err != nil {
+		t.Fatalf("WriteFile(/etc/modules) error: %v", err)
+	}
+	releasePath := filepath.Join(root, "proc", "sys", "kernel", "osrelease")
+	if err := os.MkdirAll(filepath.Dir(releasePath), 0755); err != nil {
+		t.Fatalf("MkdirAll() error: %v", err)
+	}
+	if err := os.WriteFile(releasePath, []byte(release), 0644); err != nil {
+		t.Fatalf("WriteFile(osrelease) error: %v", err)
+	}
+
+	oldLib := t1547LibModulesDir
+	oldRelease := t1547KernelReleasePath
+	oldEtcModules := t1547EtcModulesPath
+	oldModulesLoad := t1547ModulesLoadDir
+	t1547LibModulesDir = filepath.Join(root, "lib", "modules")
+	t1547KernelReleasePath = releasePath
+	t1547EtcModulesPath = etcModules
+	t1547ModulesLoadDir = modulesLoadDir
+	t.Cleanup(func() {
+		t1547LibModulesDir = oldLib
+		t1547KernelReleasePath = oldRelease
+		t1547EtcModulesPath = oldEtcModules
+		t1547ModulesLoadDir = oldModulesLoad
+	})
+}
+
+func TestT1547Hunt(t *testing.T) {
+	const release = "6.1.0-test"
+
+	tests := []struct {
+		name      string
+		dep       string
+		koFiles   map[string][]byte
+		autoload  map[string]string
+		wantFound bool
+		wantLevel int
+	}{
+		{
+			name: "registered modules only",
+			dep:  "kernel/drivers/foo.ko:\n",
+			koFiles: map[string][]byte{
+				"kernel/drivers/foo.ko": []byte("ok"),
+			},
+			wantFound: false,
+		},
+		{
+			name: "unregistered module",
+			dep:  "kernel/drivers/foo.ko:\n",
+			koFiles: map[string][]byte{
+				"kernel/drivers/foo.ko": []byte("ok"),
+				"evil.ko":               []byte("bad"),
+			},
+			wantFound: true,
+			wantLevel: LevelErr,
+		},
+		{
+			name: "autoloaded unregistered module",
+			dep:  "kernel/drivers/foo.ko:\n",
+			koFiles: map[string][]byte{
+				"kernel/drivers/foo.ko": []byte("ok"),
+				"evil.ko":               []byte("bad"),
+			},
+			autoload: map[string]string{
+				"evil.conf": "evil\n",
+			},
+			wantFound: true,
+			wantLevel: LevelCrit,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupT1547HuntFixture(t, release, tt.dep, tt.koFiles, tt.autoload)
+			got, err := (T1547{}).Hunt()
+			if err != nil {
+				t.Fatalf("Hunt() error: %v", err)
+			}
+			if got.Found != tt.wantFound {
+				t.Fatalf("Hunt() Found = %v, want %v", got.Found, tt.wantFound)
+			}
+			if got.Level != tt.wantLevel {
+				t.Fatalf("Hunt() Level = %d, want %d", got.Level, tt.wantLevel)
+			}
+			if tt.wantFound && got.Ev == nil {
+				t.Fatalf("Hunt() Ev = nil, want event with suspicious path")
 			}
 		})
 	}
