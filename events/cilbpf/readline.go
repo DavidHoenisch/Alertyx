@@ -46,7 +46,7 @@ func ReadlineBPF(evChan chan events.Event, ctx events.Ctx) {
 		return
 	}
 
-	readEvents(event, evChan, ctx, rd, eventType)
+	events.ReadEvents(event, evChan, ctx, rd, eventType)
 	<-ctx.Quit
 	rd.Close()
 }
