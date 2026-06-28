@@ -166,14 +166,15 @@ while [[ $CURRENT_ITERATION -lt $ITERATIONS ]]; do
     # Log start
     echo "[$(date '+%H:%M:%S')] Starting iteration $CURRENT_ITERATION" >> "$ACTIVITY_LOG"
     
-    # Run cursor-agent and capture output
+    # Run cursor-agent; stream output live (job logs stay readable via tail -f)
     set +e
-    OUTPUT=$(cursor-agent --model "$MODEL" --print "$PROMPT" 2>&1)
-    EXIT_CODE=$?
+    AGENT_OUTPUT=$(mktemp)
+    cursor-agent --model "$MODEL" --print "$PROMPT" 2>&1 | tee "$AGENT_OUTPUT"
+    EXIT_CODE=${PIPESTATUS[0]}
+    OUTPUT=$(cat "$AGENT_OUTPUT")
+    rm -f "$AGENT_OUTPUT"
     set -e
     
-    # Display and log output
-    echo "$OUTPUT"
     echo "$OUTPUT" >> "$ACTIVITY_LOG"
     
     # Log completion
