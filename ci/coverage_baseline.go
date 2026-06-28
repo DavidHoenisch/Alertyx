@@ -28,16 +28,16 @@ type CoverageFunctionEntry struct {
 
 // CoverageBaseline captures a go cover snapshot for change-risk tracking.
 type CoverageBaseline struct {
-	Tool               string                  `json:"tool"`
-	ToolVersion        string                  `json:"tool_version"`
-	Generated          string                  `json:"generated"`
-	CoverageTarget     float64                 `json:"coverage_target"`
-	TotalCoverage      float64                 `json:"total_coverage"`
-	PackagesTested     int                     `json:"packages_tested"`
-	PackagesNoTests    int                     `json:"packages_no_tests"`
-	UnderTargetCount   int                     `json:"under_target_count"`
-	Packages           []CoveragePackageEntry  `json:"packages"`
-	Functions          []CoverageFunctionEntry `json:"functions"`
+	Tool             string                  `json:"tool"`
+	ToolVersion      string                  `json:"tool_version"`
+	Generated        string                  `json:"generated"`
+	CoverageTarget   float64                 `json:"coverage_target"`
+	TotalCoverage    float64                 `json:"total_coverage"`
+	PackagesTested   int                     `json:"packages_tested"`
+	PackagesNoTests  int                     `json:"packages_no_tests"`
+	UnderTargetCount int                     `json:"under_target_count"`
+	Packages         []CoveragePackageEntry  `json:"packages"`
+	Functions        []CoverageFunctionEntry `json:"functions"`
 }
 
 func coverageBaselinePath(root string) string {

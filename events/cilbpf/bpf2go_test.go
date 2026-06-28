@@ -56,8 +56,8 @@ func TestEventLayoutsMatchUserspace(t *testing.T) {
 	t.Helper()
 
 	cases := []struct {
-		name    string
-		goEvent any
+		name     string
+		goEvent  any
 		bpfEvent any
 	}{
 		{"exec", events.Exec{}, bpf.ExecEvent{}},

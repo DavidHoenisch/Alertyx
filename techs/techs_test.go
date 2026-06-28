@@ -55,13 +55,13 @@ func TestAllReturnsEveryTechnique(t *testing.T) {
 	}
 
 	wantNames := map[string]bool{
-		"Listen from Non-Service account":      false,
-		"Suspicious /etc/shadow Access":      false,
-		"eBPF Module Persistence":            false,
-		"File Modified in /etc/":             false,
+		"Listen from Non-Service account":           false,
+		"Suspicious /etc/shadow Access":             false,
+		"eBPF Module Persistence":                   false,
+		"File Modified in /etc/":                    false,
 		"File Modification in Temporary Filesystem": false,
-		"SSH Authorized Keys Manipulation":   false,
-		"Kernel Modules Persistence":         false,
+		"SSH Authorized Keys Manipulation":          false,
+		"Kernel Modules Persistence":                false,
 	}
 	for _, tech := range all {
 		name := tech.Name()
@@ -152,11 +152,11 @@ func TestL1002Name(t *testing.T) {
 
 func TestL1002Scan(t *testing.T) {
 	tests := []struct {
-		name    string
-		setup   func()
-		ev      events.Event
-		found   bool
-		level   int
+		name  string
+		setup func()
+		ev    events.Event
+		found bool
+		level int
 	}{
 		{
 			name:  "non-open event",
