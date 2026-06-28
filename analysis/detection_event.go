@@ -18,7 +18,7 @@ func (d *Detection) ToDetectionEvent() output.DetectionEvent {
 		Technique:   d.Tech.Name(),
 		TechniqueID: techs.ID(d.Tech),
 		Severity:    output.SeverityFromLevel(d.Level),
-		Details:     d.Brief(),
+		Details:     detectionDetails(d),
 		Artifacts:   artifactStrings(d.Artifacts),
 	}
 
@@ -35,6 +35,13 @@ func (d *Detection) ToDetectionEvent() output.DetectionEvent {
 	evt.Process = processName(ev, d.Artifacts)
 
 	return evt
+}
+
+func detectionDetails(d *Detection) string {
+	if len(d.Artifacts) == 0 {
+		return d.Brief()
+	}
+	return d.Artifacts[0].Ev.Print()
 }
 
 func artifactStrings(artifacts []events.LogItem) []string {
