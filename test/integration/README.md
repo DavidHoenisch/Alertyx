@@ -1,6 +1,6 @@
 # Alertyx Integration Tests
 
-Integration tests exercise real eBPF programs against live kernels inside Vagrant VMs. They cannot run on the host without root and a compatible BCC setup; the VM matrix provides isolated, reproducible kernel coverage.
+Integration tests exercise real eBPF programs against live kernels inside Vagrant VMs. They cannot run on the host without root and a compatible kernel with BTF; the VM matrix provides isolated, reproducible coverage across kernel 5.x, 6.x, and 7.x.
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ go test ./test/integration/...
 
 `ubuntu-22` is the primary VM (`vagrant up` without a name targets it).
 
-Provisioning installs BCC, kernel headers, clang/llvm, and Go 1.22+ via `test/integration/provision.sh`.
+Provisioning installs libbpf, kernel headers, clang/llvm, and Go 1.22+ via `test/integration/provision.sh`.
 
 ## Quick Start
 
@@ -41,6 +41,22 @@ Run only the integration package:
 ```bash
 vagrant ssh ubuntu-22 -c "cd /vagrant && sudo go test -tags=integration -v ./test/integration/..."
 ```
+
+## Kernel Matrix Runner
+
+Run integration tests across all VMs (5.x, 6.x, and 7.x kernels):
+
+```bash
+./scripts/test-kernel-matrix.sh
+```
+
+Run against a single VM:
+
+```bash
+./scripts/test-kernel-matrix.sh ubuntu-24
+```
+
+The script brings up each VM, provisions eBPF dependencies, and runs `go test -tags=integration ./test/integration/...` as root inside the guest.
 
 ## Working with VMs
 
@@ -86,9 +102,11 @@ Integration tests are gated by the `integration` build tag and require root insi
 | `go test ./test/integration/...` | Host or VM | Harness/unit validation; no eBPF |
 | `sudo go test -tags=integration ./test/integration/...` | VM | Live eBPF technique tests |
 | `sudo go test -tags=integration -run TestIntegrationL1005 ./test/integration/...` | VM | Single example test |
+| `./scripts/test-kernel-matrix.sh` | Host | Full matrix across all VMs |
 
 Example technique tests (require `-tags=integration` and root):
 
+- `TestIntegrationAllSourcesLoadOnKernel` — loads all cilbpf event sources on the running kernel
 - `TestIntegrationL1005DetectsTmpWrite` — writes under `/tmp`
 - `TestIntegrationL1002DetectsShadowAccess` — non-privileged `/etc/shadow` read
 - `TestIntegrationT1098DetectsCrossUserAuthorizedKeysWrite` — cross-user `authorized_keys` modification
@@ -101,6 +119,7 @@ Example technique tests (require `-tags=integration` and root):
 - `Harness.RunAndWait` — runs a trigger action and waits for a technique finding
 - `ScanEvents` — scans collected events against techniques (used in unit tests)
 - `SkipUnlessIntegration` / `SkipUnlessRoot` — guard helpers for live tests
+- `KernelRelease()` — reports the running kernel version for matrix logging
 
 Files with `//go:build integration` compile only when `-tags=integration` is set.
 
@@ -120,7 +139,7 @@ Files with `//go:build integration` compile only when `-tags=integration` is set
 
 - Pass `-tags=integration` to `go test`.
 
-**BCC or probe load errors**
+**eBPF probe load errors**
 
 - Reprovision the VM: `vagrant provision <vm-name>`.
 - Compare behavior across the matrix (especially `ubuntu-22` vs `arch`) to isolate kernel-specific issues.
@@ -132,6 +151,7 @@ Files with `//go:build integration` compile only when `-tags=integration` is set
 ## Related Files
 
 - `Vagrantfile` — multi-distro VM definitions
-- `test/integration/provision.sh` — BCC and Go setup per distro
+- `scripts/test-kernel-matrix.sh` — runs integration tests across all VMs
+- `test/integration/provision.sh` — libbpf and Go setup per distro
 - `test/integration/harness.go` — shared test harness
 - `test/integration/techniques_integration_test.go` — live technique examples
