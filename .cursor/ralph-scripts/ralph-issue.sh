@@ -83,11 +83,18 @@ issue_to_task() {
     local title=$(echo "$issue_json" | jq -r '.title')
     local body=$(echo "$issue_json" | jq -r '.body')
     local labels=$(echo "$issue_json" | jq -r '.labels[].name' | tr '\n' ', ' | sed 's/,$//')
+    local body_for_description="$body"
+    local criteria_lines=""
     
     # Determine test command based on labels
     local test_cmd="go test ./..."
     if echo "$labels" | grep -q "testing"; then
         test_cmd="go test -v ./..."
+    fi
+    
+    if echo "$body" | grep -q '\[ \]'; then
+        body_for_description=$(echo "$body" | grep -Ev '^\s*(-|\*|[0-9]+\.)\s*\[ [x ] \]' || true)
+        criteria_lines=$(echo "$body" | grep -E '^\s*(-|\*|[0-9]+\.)\s*\[ \]' | sed 's/^[[:space:]]*//' || true)
     fi
     
     cat << EOF
@@ -103,15 +110,14 @@ github_issue: $number
 
 ## Task Description
 
-$body
+$body_for_description
 
 ## Success Criteria
 
 EOF
 
-    # Extract checkboxes from body if present (bullets and numbered lists)
-    if echo "$body" | grep -q '\[ \]'; then
-        echo "$body" | grep -E '^\s*(-|\*|[0-9]+\.)\s*\[ \]' | sed 's/^[[:space:]]*//' || true
+    if [[ -n "$criteria_lines" ]]; then
+        echo "$criteria_lines"
     else
         # Create generic criteria from acceptance criteria section
         echo "- [ ] Implementation complete"
