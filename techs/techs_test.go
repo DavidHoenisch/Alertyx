@@ -639,6 +639,79 @@ func TestT1547Hunt(t *testing.T) {
 	}
 }
 
+func setupT1547CheckFixture(t *testing.T, modulesDisabled string) {
+	t.Helper()
+
+	root := t.TempDir()
+	path := filepath.Join(root, "proc", "sys", "kernel", "modules_disabled")
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		t.Fatalf("MkdirAll() error: %v", err)
+	}
+	if err := os.WriteFile(path, []byte(modulesDisabled), 0644); err != nil {
+		t.Fatalf("WriteFile(modules_disabled) error: %v", err)
+	}
+
+	old := t1547ModulesDisabledPath
+	t1547ModulesDisabledPath = path
+	t.Cleanup(func() { t1547ModulesDisabledPath = old })
+}
+
+func TestT1547Check(t *testing.T) {
+	tests := []struct {
+		name      string
+		value     string
+		wantFound bool
+		wantLevel int
+	}{
+		{
+			name:      "module loading disabled",
+			value:     "1\n",
+			wantFound: false,
+		},
+		{
+			name:      "module loading allowed",
+			value:     "0\n",
+			wantFound: true,
+			wantLevel: LevelWarn,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupT1547CheckFixture(t, tt.value)
+			got, err := (T1547{}).Check()
+			if err != nil {
+				t.Fatalf("Check() error: %v", err)
+			}
+			if got.Found != tt.wantFound {
+				t.Fatalf("Check() Found = %v, want %v", got.Found, tt.wantFound)
+			}
+			if got.Level != tt.wantLevel {
+				t.Fatalf("Check() Level = %d, want %d", got.Level, tt.wantLevel)
+			}
+		})
+	}
+}
+
+func TestT1547CheckMissingSysctl(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "proc", "sys", "kernel", "modules_disabled")
+
+	old := t1547ModulesDisabledPath
+	t1547ModulesDisabledPath = path
+	t.Cleanup(func() { t1547ModulesDisabledPath = old })
+
+	got, err := (T1547{}).Check()
+	if err != nil {
+		t.Fatalf("Check() error: %v", err)
+	}
+	if !got.Found {
+		t.Fatal("Check() should report finding when modules_disabled sysctl is absent")
+	}
+	if got.Level != LevelWarn {
+		t.Fatalf("Check() Level = %d, want %d", got.Level, LevelWarn)
+	}
+}
+
 func TestFindingStruct(t *testing.T) {
 	ev := openEvent(1000, 1, "/tmp/x", os.O_WRONLY, "/tmp", 0)
 	f := Finding{Ev: ev, Found: true, Level: LevelErr}

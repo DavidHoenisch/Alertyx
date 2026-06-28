@@ -15,10 +15,11 @@ var moduleLoaderBins = []string{
 }
 
 var (
-	t1547EtcModulesPath    = "/etc/modules"
-	t1547ModulesLoadDir    = "/etc/modules-load.d"
-	t1547LibModulesDir     = "/lib/modules"
-	t1547KernelReleasePath = "/proc/sys/kernel/osrelease"
+	t1547EtcModulesPath      = "/etc/modules"
+	t1547ModulesLoadDir      = "/etc/modules-load.d"
+	t1547LibModulesDir       = "/lib/modules"
+	t1547KernelReleasePath   = "/proc/sys/kernel/osrelease"
+	t1547ModulesDisabledPath = "/proc/sys/kernel/modules_disabled"
 )
 
 var t1547SkipModuleWalkDirs = map[string]bool{
@@ -84,6 +85,28 @@ func (t T1547) Hunt() (Finding, error) {
 		return t1547HuntFinding(path, LevelCrit), nil
 	}
 	return t1547HuntFinding(suspicious[0], LevelErr), nil
+}
+
+func (t T1547) Check() (Finding, error) {
+	restricted, err := t1547ModuleLoadingRestricted()
+	if err != nil {
+		return Finding{}, err
+	}
+	if restricted {
+		return Finding{}, nil
+	}
+	return Finding{Found: true, Level: LevelWarn}, nil
+}
+
+func t1547ModuleLoadingRestricted() (bool, error) {
+	data, err := os.ReadFile(t1547ModulesDisabledPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+	return strings.TrimSpace(string(data)) == "1", nil
 }
 
 func isModuleLoaderExec(argv string) bool {
