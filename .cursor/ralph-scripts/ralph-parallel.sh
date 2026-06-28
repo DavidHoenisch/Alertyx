@@ -325,15 +325,26 @@ while [[ $CURRENT_INDEX -lt $TOTAL_ISSUES ]] || [[ $ACTIVE_JOBS -gt 0 ]]; do
             
             # Check if process is still running
             if ! kill -0 "$pid" 2>/dev/null; then
-                # Process completed, get exit code
-                wait "$pid" || true
-                exit_code=$?
+                # Process completed, get exit code (must capture before || true clobbers $?)
+                if wait "$pid"; then
+                    exit_code=0
+                else
+                    exit_code=$?
+                fi
                 
                 issue_num=${JOB_ISSUES[$job_id]}
                 branch_name=${JOB_BRANCHES[$job_id]}
                 worktree_path=${JOB_WORKTREES[$job_id]}
                 
-                if [[ $exit_code -eq 0 ]]; then
+                # A job only succeeds if the agent ran and produced commits
+                branch_has_commits=false
+                if git rev-parse --verify "$branch_name" >/dev/null 2>&1; then
+                    if [[ -n "$(git rev-list "$DEFAULT_BRANCH..$branch_name" 2>/dev/null)" ]]; then
+                        branch_has_commits=true
+                    fi
+                fi
+                
+                if [[ $exit_code -eq 0 && "$branch_has_commits" == "true" ]]; then
                     log_success "Job $job_id completed: Issue #$issue_num"
                     COMPLETED_ISSUES+=("$issue_num")
                     
@@ -376,7 +387,11 @@ while [[ $CURRENT_INDEX -lt $TOTAL_ISSUES ]] || [[ $ACTIVE_JOBS -gt 0 ]]; do
                         git checkout "$DEFAULT_BRANCH"
                     fi
                 else
-                    log_warn "Job $job_id failed: Issue #$issue_num (exit code: $exit_code)"
+                    if [[ $exit_code -eq 0 && "$branch_has_commits" != "true" ]]; then
+                        log_warn "Job $job_id produced no commits: Issue #$issue_num (see .ralph/parallel/$RUN_ID/job${job_id}.log)"
+                    else
+                        log_warn "Job $job_id failed: Issue #$issue_num (exit code: $exit_code)"
+                    fi
                     FAILED_ISSUES+=("$issue_num")
                 fi
                 
@@ -431,8 +446,13 @@ if [[ $FAILED_COUNT -gt 0 ]]; then
 fi
 
 # Open PR if requested
+INTEGRATION_COMMITS=$(git rev-list "$DEFAULT_BRANCH..$INTEGRATION_BRANCH" 2>/dev/null | wc -l | tr -d '[:space:]')
 if [[ "$OPEN_PRS" == "true" && "$NO_MERGE" != "true" && $COMPLETED_COUNT -gt 0 ]]; then
     echo ""
+    if [[ "${INTEGRATION_COMMITS:-0}" -eq 0 ]]; then
+        log_warn "No commits on $INTEGRATION_BRANCH — skipping PR creation"
+        git checkout "$DEFAULT_BRANCH"
+    else
     log_info "Opening PR for integration branch..."
     git checkout "$INTEGRATION_BRANCH"
     git push -u origin "$INTEGRATION_BRANCH"
@@ -466,6 +486,7 @@ $PR_FAILED
         --base "$DEFAULT_BRANCH"
     
     git checkout "$DEFAULT_BRANCH"
+    fi
 fi
 
 echo ""

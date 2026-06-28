@@ -109,9 +109,9 @@ $body
 
 EOF
 
-    # Extract checkboxes from body if present
+    # Extract checkboxes from body if present (bullets and numbered lists)
     if echo "$body" | grep -q '\[ \]'; then
-        echo "$body" | grep -E '^\s*-?\s*\[ \]' | sed 's/^[[:space:]]*//'
+        echo "$body" | grep -E '^\s*(-|\*|[0-9]+\.)\s*\[ \]' | sed 's/^[[:space:]]*//' || true
     else
         # Create generic criteria from acceptance criteria section
         echo "- [ ] Implementation complete"
