@@ -428,9 +428,91 @@ func TestT1547Name(t *testing.T) {
 }
 
 func TestT1547Scan(t *testing.T) {
-	got := T1547{}.Scan(openEvent(0, 1, "/etc/modules", os.O_RDONLY, "/", 0))
-	if got.Found {
-		t.Fatalf("Scan() = %+v, want no finding", got)
+	tests := []struct {
+		name  string
+		ev    events.Event
+		found bool
+		level int
+	}{
+		{
+			name:  "read etc modules",
+			ev:    openEvent(0, 1, "/etc/modules", os.O_RDONLY, "/", 0),
+			found: false,
+		},
+		{
+			name:  "write etc modules",
+			ev:    openEvent(0, 1, "/etc/modules", os.O_WRONLY, "/", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "write etc modules by pwd",
+			ev:    openEvent(0, 1, "modules", os.O_WRONLY, "/etc", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "write modules load drop-in",
+			ev:    openEvent(0, 1, "/etc/modules-load.d/evil.conf", os.O_WRONLY, "/", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "write modules load drop-in by pwd",
+			ev:    openEvent(0, 1, "evil.conf", os.O_WRONLY, "/etc/modules-load.d", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "write lib modules tree",
+			ev:    openEvent(0, 1, "/lib/modules/6.1.0/evil.ko", os.O_WRONLY, "/", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "write lib modules tree by pwd",
+			ev:    openEvent(0, 1, "evil.ko", os.O_WRONLY, "/lib/modules/6.1.0", 0),
+			found: true,
+			level: LevelErr,
+		},
+		{
+			name:  "unrelated open",
+			ev:    openEvent(0, 1, "/etc/passwd", os.O_WRONLY, "/", 0),
+			found: false,
+		},
+		{
+			name:  "insmod exec",
+			ev:    execEvent(0, 1, "/sbin/insmod /tmp/evil.ko"),
+			found: true,
+			level: LevelWarn,
+		},
+		{
+			name:  "modprobe exec",
+			ev:    execEvent(0, 1, "/sbin/modprobe evil"),
+			found: true,
+			level: LevelWarn,
+		},
+		{
+			name:  "unrelated exec",
+			ev:    execEvent(0, 1, "/bin/ls /tmp"),
+			found: false,
+		},
+		{
+			name:  "listen event",
+			ev:    listenEvent(0, 1),
+			found: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := T1547{}.Scan(tt.ev)
+			if got.Found != tt.found {
+				t.Fatalf("Scan() Found = %v, want %v", got.Found, tt.found)
+			}
+			if got.Level != tt.level {
+				t.Fatalf("Scan() Level = %d, want %d", got.Level, tt.level)
+			}
+		})
 	}
 }
 
