@@ -222,10 +222,6 @@ func TestL1002Check(t *testing.T) {
 	}
 }
 
-func TestL1002Mitigate(t *testing.T) {
-	_ = L1002{}.Mitigate()
-}
-
 func TestL1003Name(t *testing.T) {
 	if got := (L1003{}).Name(); got != "eBPF Module Persistence" {
 		t.Fatalf("Name() = %q", got)

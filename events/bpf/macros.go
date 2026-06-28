@@ -61,10 +61,15 @@ var (
 	gatherStr = `
 	struct event_t event = {};
 	struct task_struct *task;
+	struct task_struct *parent = NULL;
+	u64 uid_gid;
 
 	task = (struct task_struct *)bpf_get_current_task();
 	event.pid = bpf_get_current_pid_tgid() >> 32;
-	event.ppid = task->real_parent->tgid;
+	uid_gid = bpf_get_current_uid_gid();
+	event.uid = uid_gid;
+	bpf_probe_read(&parent, sizeof(parent), &task->real_parent);
+	bpf_probe_read(&event.ppid, sizeof(event.ppid), &parent->tgid);
 	`
 
 	retStr = `

@@ -8,6 +8,10 @@ import (
 	"github.com/DavidHoenisch/Alertyx/events"
 )
 
+const shadowFileMode = 0640
+
+var shadowFilePath = "/etc/shadow"
+
 type L1002 struct {
 	techBase
 }
@@ -47,6 +51,5 @@ func (t L1002) Check() (Finding, error) {
 }
 
 func (t L1002) Mitigate() error {
-	err := os.Chmod("/etc/shadow", 644)
-	return err
+	return os.Chmod(shadowFilePath, shadowFileMode)
 }
