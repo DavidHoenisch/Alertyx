@@ -4,6 +4,7 @@ import (
 	"container/ring"
 	"os"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"testing"
 
@@ -687,6 +688,40 @@ func TestT1547Check(t *testing.T) {
 			}
 			if got.Level != tt.wantLevel {
 				t.Fatalf("Check() Level = %d, want %d", got.Level, tt.wantLevel)
+			}
+		})
+	}
+}
+
+func TestT1547Mitigate(t *testing.T) {
+	tests := []struct {
+		name      string
+		initial   string
+		wantValue string
+	}{
+		{
+			name:      "disables module loading",
+			initial:   "0\n",
+			wantValue: "1",
+		},
+		{
+			name:      "already disabled is no-op",
+			initial:   "1\n",
+			wantValue: "1",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setupT1547CheckFixture(t, tt.initial)
+			if err := (T1547{}).Mitigate(); err != nil {
+				t.Fatalf("Mitigate() error: %v", err)
+			}
+			data, err := os.ReadFile(t1547ModulesDisabledPath)
+			if err != nil {
+				t.Fatalf("ReadFile() error: %v", err)
+			}
+			if got := strings.TrimSpace(string(data)); got != tt.wantValue {
+				t.Fatalf("modules_disabled = %q, want %q", got, tt.wantValue)
 			}
 		})
 	}

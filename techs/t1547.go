@@ -98,6 +98,17 @@ func (t T1547) Check() (Finding, error) {
 	return Finding{Found: true, Level: LevelWarn}, nil
 }
 
+func (t T1547) Mitigate() error {
+	restricted, err := t1547ModuleLoadingRestricted()
+	if err != nil {
+		return err
+	}
+	if restricted {
+		return nil
+	}
+	return os.WriteFile(t1547ModulesDisabledPath, []byte("1\n"), 0644)
+}
+
 func t1547ModuleLoadingRestricted() (bool, error) {
 	data, err := os.ReadFile(t1547ModulesDisabledPath)
 	if err != nil {
