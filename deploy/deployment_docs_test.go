@@ -149,3 +149,24 @@ func TestDeploymentReadmeDocumentsTroubleshooting(t *testing.T) {
 		}
 	}
 }
+
+func TestDeploymentReadmeDocumentsCapabilityRequirements(t *testing.T) {
+	content := readDeploymentReadme(t)
+	required := []string{
+		"## Capability Requirements",
+		"CAP_BPF",
+		"CAP_PERFMON",
+		"CAP_SYS_ADMIN",
+		"CAP_SYS_RESOURCE",
+		"CapabilityBoundingSet",
+		"AmbientCapabilities",
+		"NoNewPrivileges=no",
+		"RLIMIT_MEMLOCK",
+		"deploy/alertyx.service",
+	}
+	for _, marker := range required {
+		if !strings.Contains(content, marker) {
+			t.Fatalf("deployment README must document capability requirement %q", marker)
+		}
+	}
+}

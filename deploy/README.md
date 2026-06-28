@@ -120,6 +120,45 @@ The unit runs `alertyx monitor --syslog` and sends stdout/stderr to the journal 
 
 The bundled unit file sets `MemoryMax=512M` and `CPUQuota=50%`. Edit `/etc/systemd/system/alertyx.service` and run `sudo systemctl daemon-reload` before restarting if you need different limits.
 
+## Capability Requirements
+
+Alertyx loads eBPF programs into the kernel for continuous monitoring. The bundled systemd unit grants the minimum Linux capabilities needed for that workload instead of running as unrestricted root.
+
+The unit file sets both `CapabilityBoundingSet` and `AmbientCapabilities` to the same four capabilities so the service process inherits them at start:
+
+| Capability | Purpose |
+|------------|---------|
+| `CAP_BPF` | Load, attach, and manage BPF programs and maps (kernel 5.8+) |
+| `CAP_PERFMON` | Attach tracing and perf-related BPF programs (tracepoints, kprobes) |
+| `CAP_SYS_ADMIN` | Fallback for pre-5.8 kernels and BPF operations not covered by `CAP_BPF` alone |
+| `CAP_SYS_RESOURCE` | Raise locked-memory limits (`RLIMIT_MEMLOCK`) for BPF map allocation |
+
+### Why each capability is required
+
+**`CAP_BPF`** — Primary eBPF privilege on modern kernels. Without it, the monitor cannot load the exec, open, listen, or readline BPF programs that drive detection.
+
+**`CAP_PERFMON`** — Required alongside `CAP_BPF` for attaching many tracing-oriented BPF program types used by the monitor.
+
+**`CAP_SYS_ADMIN`** — Needed when `CAP_BPF` is unavailable (kernels before 5.8) and for some auxiliary operations such as accessing trace infrastructure. Keeping it in the bounding set preserves compatibility across kernel versions.
+
+**`CAP_SYS_RESOURCE`** — BPF maps consume locked kernel memory. This capability allows the process to request sufficient `RLIMIT_MEMLOCK`; without it, program load often fails with memory allocation errors.
+
+### Privilege and hardening settings
+
+**`NoNewPrivileges=no`** — Must remain disabled. Setting `NoNewPrivileges=yes` prevents the process from acquiring the ambient capabilities needed to load BPF programs, causing the service to fail at startup.
+
+**`CapabilityBoundingSet` vs `AmbientCapabilities`** — The bounding set defines the maximum capability set the service may ever use. Ambient capabilities are passed to the `ExecStart` process so the unprivileged service user context still receives the BPF-related caps at launch.
+
+### Verifying capabilities
+
+Inspect the effective unit configuration:
+
+```bash
+systemctl show alertyx.service -p CapabilityBoundingSet -p AmbientCapabilities -p NoNewPrivileges
+```
+
+If capability errors appear in the journal, confirm the host kernel is 5.8 or newer (for `CAP_BPF`) and that the installed unit matches `deploy/alertyx.service`.
+
 ## Troubleshooting
 
 **Service fails to start**
@@ -130,8 +169,10 @@ The bundled unit file sets `MemoryMax=512M` and `CPUQuota=50%`. Edit `/etc/syste
 
 **Permission or capability errors**
 
-- The service requires elevated capabilities for eBPF; see the unit file `CapabilityBoundingSet` and `AmbientCapabilities` settings
-- `NoNewPrivileges=no` is required so BPF programs can load
+- See [Capability Requirements](#capability-requirements) for the purpose of each required capability
+- Confirm the running unit includes `CapabilityBoundingSet` and `AmbientCapabilities` with all four caps
+- Verify `NoNewPrivileges=no` in the unit file
+- On kernels before 5.8, ensure `CAP_SYS_ADMIN` is present because `CAP_BPF` is not available
 
 **Install script errors**
 
