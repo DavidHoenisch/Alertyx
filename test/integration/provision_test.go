@@ -64,22 +64,23 @@ func TestProvisionScriptSupportsDistros(t *testing.T) {
 	}
 }
 
-func TestProvisionScriptInstallsBCCDependencies(t *testing.T) {
+func TestProvisionScriptInstallsEbpfDependencies(t *testing.T) {
 	content := readProvisionScript(t)
 	required := []string{
-		"libbcc-dev",
-		"bcc-devel",
-		"linux-headers",
 		"libbpf-dev",
 		"libbpf-devel",
-		"verify_bcc_setup",
-		"libbcc_present",
+		"linux-headers",
+		"verify_ebpf_setup",
+		"libbpf_present",
 		"kernel_headers_present",
 	}
 	for _, marker := range required {
 		if !strings.Contains(content, marker) {
-			t.Fatalf("provision.sh must install or verify BCC dependency %q", marker)
+			t.Fatalf("provision.sh must install or verify eBPF dependency %q", marker)
 		}
+	}
+	if strings.Contains(content, "libbcc") || strings.Contains(content, "bcc-devel") {
+		t.Fatal("provision.sh must not install BCC packages after gobpf removal")
 	}
 }
 
