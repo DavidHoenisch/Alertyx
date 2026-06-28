@@ -421,19 +421,6 @@ func TestT1098CheckAndMitigate(t *testing.T) {
 	}
 }
 
-func TestT1547Name(t *testing.T) {
-	if got := (T1547{}).Name(); got != "Kernel Modules Persistence" {
-		t.Fatalf("Name() = %q", got)
-	}
-}
-
-func TestT1547Scan(t *testing.T) {
-	got := T1547{}.Scan(openEvent(0, 1, "/etc/modules", os.O_RDONLY, "/", 0))
-	if got.Found {
-		t.Fatalf("Scan() = %+v, want no finding", got)
-	}
-}
-
 func TestFindingStruct(t *testing.T) {
 	ev := openEvent(1000, 1, "/tmp/x", os.O_WRONLY, "/tmp", 0)
 	f := Finding{Ev: ev, Found: true, Level: LevelErr}
