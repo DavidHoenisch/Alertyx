@@ -8,6 +8,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [SIEM Integration](#siem-integration)
 - [Project Structure](#project-structure)
 - [Screenshots & Examples](#screenshots--examples)
 - [Future Activities](#fun-future-activities)
@@ -59,6 +60,16 @@ Flags:
 
 Use "alertyx [command] --help" for more information about a command.
 ```
+
+## SIEM Integration
+
+Alertyx supports structured JSON output for SIEM platforms (Splunk, Elastic, etc.). Run monitoring with NDJSON detections on stdout:
+
+```bash
+sudo ./Alertyx monitor --output json
+```
+
+See [docs/siem-integration.md](./docs/siem-integration.md) for the event schema, severity mapping, and deployment patterns.
 
 ## Information
 
