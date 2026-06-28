@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/DavidHoenisch/Alertyx/events"
-	"github.com/DavidHoenisch/Alertyx/events/bpf"
+	"github.com/DavidHoenisch/Alertyx/events/cilbpf"
 )
 
 func TestIntegrationPPIDTrackingOnLiveKernel(t *testing.T) {
@@ -18,7 +18,7 @@ func TestIntegrationPPIDTrackingOnLiveKernel(t *testing.T) {
 	h := NewHarness(t)
 	defer h.Stop()
 
-	if err := h.Start(bpf.ExecBPF); err != nil {
+	if err := h.Start(cilbpf.ExecBPF); err != nil {
 		t.Fatalf("Start: %v", err)
 	}
 

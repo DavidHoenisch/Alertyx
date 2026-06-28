@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Provisions Vagrant VMs with BCC, kernel headers, and Go for Alertyx integration tests.
+# Provisions Vagrant VMs with eBPF build deps, kernel headers, and Go for integration tests.
 
 set -euo pipefail
 
@@ -19,12 +19,11 @@ require_os_release() {
 }
 
 install_apt_packages() {
-	log "installing BCC dependencies via apt (${ID})"
+	log "installing eBPF dependencies via apt (${ID})"
 	export DEBIAN_FRONTEND=noninteractive
 	apt-get update -qq
 	apt-get install -y \
 		linux-headers-"$(uname -r)" \
-		libbcc-dev \
 		libbpf-dev \
 		clang \
 		llvm \
@@ -35,11 +34,9 @@ install_apt_packages() {
 }
 
 install_dnf_packages() {
-	log "installing BCC dependencies via dnf (${ID})"
+	log "installing eBPF dependencies via dnf (${ID})"
 	dnf install -y \
 		kernel-devel \
-		bcc-tools \
-		bcc-devel \
 		libbpf-devel \
 		clang \
 		llvm \
@@ -50,10 +47,9 @@ install_dnf_packages() {
 }
 
 install_pacman_packages() {
-	log "installing BCC dependencies via pacman (${ID})"
+	log "installing eBPF dependencies via pacman (${ID})"
 	pacman -Sy --noconfirm \
 		base-devel \
-		bcc \
 		bpf \
 		linux-headers \
 		clang \
@@ -131,18 +127,18 @@ EOF
 	log "installed $(go version)"
 }
 
-libbcc_present() {
+libbpf_present() {
 	local candidate
 	for candidate in \
-		/usr/lib/x86_64-linux-gnu/libbcc.so \
-		/usr/lib64/libbcc.so \
-		/usr/lib/libbcc.so; do
+		/usr/lib/x86_64-linux-gnu/libbpf.so \
+		/usr/lib64/libbpf.so \
+		/usr/lib/libbpf.so; do
 		if [[ -f "${candidate}" ]]; then
 			return 0
 		fi
 	done
 
-	if ldconfig -p 2>/dev/null | grep -q 'libbcc\.so'; then
+	if ldconfig -p 2>/dev/null | grep -q 'libbpf\.so'; then
 		return 0
 	fi
 
@@ -155,9 +151,9 @@ kernel_headers_present() {
 	return 1
 }
 
-verify_bcc_setup() {
-	if ! libbcc_present; then
-		log "libbcc not found after package install"
+verify_ebpf_setup() {
+	if ! libbpf_present; then
+		log "libbpf not found after package install"
 		exit 1
 	fi
 
@@ -166,14 +162,14 @@ verify_bcc_setup() {
 		exit 1
 	fi
 
-	log "BCC runtime and kernel headers verified"
+	log "libbpf runtime and kernel headers verified"
 }
 
 main() {
 	require_os_release
 	install_distro_packages
 	install_go
-	verify_bcc_setup
+	verify_ebpf_setup
 	log "provision complete"
 }
 

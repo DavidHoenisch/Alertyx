@@ -10,8 +10,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/iovisor/gobpf/bcc"
 )
 
 type Ctx struct {
@@ -105,7 +103,7 @@ func (e *eventBase) SetRetVal(val int32) {
 
 func (e *eventBase) Write(data []byte) (Event, error) {
 	newEvent := &eventBase{}
-	err := binary.Read(bytes.NewBuffer(data), bcc.GetHostByteOrder(), newEvent)
+	err := binary.Read(bytes.NewBuffer(data), binary.LittleEndian, newEvent)
 	return newEvent, err
 }
 

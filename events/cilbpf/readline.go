@@ -8,36 +8,37 @@ import (
 	"github.com/cilium/ebpf/rlimit"
 )
 
-// ExecBPF loads cilium/ebpf exec tracepoint programs and streams decoded events.
-func ExecBPF(evChan chan events.Event, ctx events.Ctx) {
-	eventType := "exec"
-	event := &events.Exec{}
+const bashPath = "/bin/bash"
+
+// ReadlineBPF loads cilium/ebpf bash readline uretprobe and streams decoded events.
+func ReadlineBPF(evChan chan events.Event, ctx events.Ctx) {
+	eventType := "readline"
+	event := &events.Readline{}
 
 	if err := rlimit.RemoveMemlock(); err != nil {
 		ctx.Error <- events.FormatError(eventType, "failed to adjust memlock rlimit", err)
 		return
 	}
 
-	objs := bpf.ExecObjects{}
-	if err := bpf.LoadExecObjects(&objs, nil); err != nil {
+	objs := bpf.ReadlineObjects{}
+	if err := bpf.LoadReadlineObjects(&objs, nil); err != nil {
 		ctx.Error <- events.FormatError(eventType, "failed to load eBPF objects", err)
 		return
 	}
 	defer objs.Close()
 
-	enterLink, err := link.Tracepoint("syscalls", "sys_enter_execve", objs.TpEnterExecve, nil)
+	ex, err := link.OpenExecutable(bashPath)
 	if err != nil {
-		ctx.Error <- events.FormatError(eventType, "failed to attach sys_enter_execve tracepoint", err)
+		ctx.Error <- events.FormatError(eventType, "failed to open "+bashPath, err)
 		return
 	}
-	defer enterLink.Close()
 
-	exitLink, err := link.Tracepoint("syscalls", "sys_exit_execve", objs.TpExitExecve, nil)
+	uretprobeLink, err := ex.Uretprobe("readline", objs.UretprobeBashReadline, nil)
 	if err != nil {
-		ctx.Error <- events.FormatError(eventType, "failed to attach sys_exit_execve tracepoint", err)
+		ctx.Error <- events.FormatError(eventType, "failed to attach readline uretprobe", err)
 		return
 	}
-	defer exitLink.Close()
+	defer uretprobeLink.Close()
 
 	rd, err := perf.NewReader(objs.Events, 4096)
 	if err != nil {

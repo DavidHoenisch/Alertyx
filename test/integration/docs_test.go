@@ -80,6 +80,8 @@ func TestIntegrationReadmeDocumentsHarnessAndExamples(t *testing.T) {
 		"harness.go",
 		"NewHarness",
 		"RunAndWait",
+		"KernelRelease()",
+		"TestIntegrationAllSourcesLoadOnKernel",
 		"TestIntegrationL1005DetectsTmpWrite",
 		"TestIntegrationL1002DetectsShadowAccess",
 		"TestIntegrationT1098DetectsCrossUserAuthorizedKeysWrite",
@@ -90,5 +92,22 @@ func TestIntegrationReadmeDocumentsHarnessAndExamples(t *testing.T) {
 		if !strings.Contains(content, marker) {
 			t.Fatalf("integration README must document %q", marker)
 		}
+	}
+}
+
+func TestIntegrationReadmeDocumentsKernelMatrixRunner(t *testing.T) {
+	content := readIntegrationReadme(t)
+	required := []string{
+		"## Kernel Matrix Runner",
+		"scripts/test-kernel-matrix.sh",
+		"libbpf",
+	}
+	for _, marker := range required {
+		if !strings.Contains(content, marker) {
+			t.Fatalf("integration README must document %q", marker)
+		}
+	}
+	if strings.Contains(content, "BCC") {
+		t.Fatal("integration README must not reference BCC after cilium/ebpf migration")
 	}
 }

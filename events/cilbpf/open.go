@@ -8,33 +8,33 @@ import (
 	"github.com/cilium/ebpf/rlimit"
 )
 
-// ExecBPF loads cilium/ebpf exec tracepoint programs and streams decoded events.
-func ExecBPF(evChan chan events.Event, ctx events.Ctx) {
-	eventType := "exec"
-	event := &events.Exec{}
+// OpenBPF loads cilium/ebpf openat tracepoint programs and streams decoded events.
+func OpenBPF(evChan chan events.Event, ctx events.Ctx) {
+	eventType := "open"
+	event := &events.Open{}
 
 	if err := rlimit.RemoveMemlock(); err != nil {
 		ctx.Error <- events.FormatError(eventType, "failed to adjust memlock rlimit", err)
 		return
 	}
 
-	objs := bpf.ExecObjects{}
-	if err := bpf.LoadExecObjects(&objs, nil); err != nil {
+	objs := bpf.OpenObjects{}
+	if err := bpf.LoadOpenObjects(&objs, nil); err != nil {
 		ctx.Error <- events.FormatError(eventType, "failed to load eBPF objects", err)
 		return
 	}
 	defer objs.Close()
 
-	enterLink, err := link.Tracepoint("syscalls", "sys_enter_execve", objs.TpEnterExecve, nil)
+	enterLink, err := link.Tracepoint("syscalls", "sys_enter_openat", objs.TpEnterOpenat, nil)
 	if err != nil {
-		ctx.Error <- events.FormatError(eventType, "failed to attach sys_enter_execve tracepoint", err)
+		ctx.Error <- events.FormatError(eventType, "failed to attach sys_enter_openat tracepoint", err)
 		return
 	}
 	defer enterLink.Close()
 
-	exitLink, err := link.Tracepoint("syscalls", "sys_exit_execve", objs.TpExitExecve, nil)
+	exitLink, err := link.Tracepoint("syscalls", "sys_exit_openat", objs.TpExitOpenat, nil)
 	if err != nil {
-		ctx.Error <- events.FormatError(eventType, "failed to attach sys_exit_execve tracepoint", err)
+		ctx.Error <- events.FormatError(eventType, "failed to attach sys_exit_openat tracepoint", err)
 		return
 	}
 	defer exitLink.Close()
