@@ -35,6 +35,16 @@ func Execute() {
 	}
 }
 
+func configureOutput(cmd *cobra.Command, args []string) error {
+	if err := output.SetFormat(outputFormat); err != nil {
+		return err
+	}
+	output.Init()
+	return nil
+}
+
+var outputFormat string
+
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -45,8 +55,9 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&common.Active, "active", "a", false, "counter detected malicious activity (dangerous, may clobber)")
 	rootCmd.PersistentFlags().BoolVarP(&output.Verbose, "verbose", "v", false, "enable verbose output")
 	rootCmd.PersistentFlags().BoolVarP(&output.Syslog, "syslog", "s", false, "output to syslog")
+	rootCmd.PersistentFlags().StringVar(&outputFormat, "output", output.FormatText, "output format: text or json")
+	rootCmd.PersistentPreRunE = configureOutput
 	rootCmd.AddCommand(monitorCmd, huntCmd, mitigateCmd, versionCmd)
-	rootCmd.Execute()
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

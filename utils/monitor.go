@@ -78,7 +78,13 @@ func AlertyxMonitor() {
 			}
 			for _, det := range detections {
 				analysis.Log(*det)
-				if det.Dupe.Tech != nil {
+				if output.IsJSON() {
+					if det.Dupe.Tech == nil {
+						if err := output.WriteDetectionEvent(det.ToDetectionEvent()); err != nil {
+							output.Err(err)
+						}
+					}
+				} else if det.Dupe.Tech != nil {
 					if common.Duplicates {
 						output.Leveled(det.Level, "DUPLICATE!", det.Print())
 					}
