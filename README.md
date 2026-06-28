@@ -7,6 +7,7 @@
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
+- [Development](#development)
 - [Usage](#usage)
 - [SIEM Integration](#siem-integration)
 - [Project Structure](#project-structure)
@@ -30,14 +31,54 @@
 ## Installation
 
 1. Ensure [BCC](https://github.com/iovisor/bcc) is installed.
-2. Install `alertyx`:
+2. Install `Alertyx`:
     - Clone this repository and build the binary (requires Go):
         ```bash
-        git clone https://github.com/sourque/alertyx
-        cd alertyx
-        go build
+        git clone https://github.com/DavidHoenisch/Alertyx
+        cd Alertyx
+        make build
         ```
-    - Or download the `alertyx` binary from releases.
+        Or without Make: `go build -o Alertyx .`
+    - Or download a release binary.
+
+## Development
+
+The repo includes a `Makefile` for common build, test, and deploy tasks. Run `make` or `make help` to list all targets.
+
+**Build and test**
+
+```bash
+make build          # produce ./Alertyx
+make test           # unit tests
+make test-race      # tests with race detector
+make test-cover     # tests with coverage profile
+make cover          # HTML coverage report
+make lint           # gofmt check + go vet
+```
+
+**CI and quality checks**
+
+```bash
+make ci             # build-all, test-cover, and fuzz (mirrors main CI)
+make fuzz           # time-limited fuzz tests (override: FUZZTIME=10s make fuzz)
+make mutation       # mutation tests on ./techs (requires gremlins)
+```
+
+**Dependencies and integration**
+
+```bash
+make deps                  # eBPF build deps on Debian/Ubuntu
+make integration           # integration harness (no live eBPF)
+make integration-live      # live eBPF tests (requires root)
+make integration-matrix    # Vagrant kernel matrix
+```
+
+**Deploy**
+
+```bash
+make deploy-install        # install binary + systemd unit (requires root)
+make deploy-uninstall      # remove installation (requires root)
+```
 
 ## Usage
 
