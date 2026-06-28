@@ -130,4 +130,90 @@ func TestREADMELinksSIEMIntegrationDoc(t *testing.T) {
 	if !strings.Contains(content, "docs/siem-integration.md") {
 		t.Fatal("README.md must link to docs/siem-integration.md")
 	}
+	if !strings.Contains(content, "docs/siem-queries.md") {
+		t.Fatal("README.md must link to docs/siem-queries.md")
+	}
+}
+
+func siemQueriesDocPath(t *testing.T) string {
+	t.Helper()
+	return filepath.Join(repoRoot(t), "docs", "siem-queries.md")
+}
+
+func readSIEMQueriesDoc(t *testing.T) string {
+	t.Helper()
+	data, err := os.ReadFile(siemQueriesDocPath(t))
+	if err != nil {
+		t.Fatalf("failed to read SIEM queries doc: %v", err)
+	}
+	return string(data)
+}
+
+func TestSIEMQueriesDocExists(t *testing.T) {
+	if _, err := os.Stat(siemQueriesDocPath(t)); err != nil {
+		t.Fatalf("docs/siem-queries.md not found: %v", err)
+	}
+}
+
+func TestSIEMQueriesDocLinksFromIntegrationDoc(t *testing.T) {
+	content := readSIEMIntegrationDoc(t)
+	if !strings.Contains(content, "siem-queries.md") {
+		t.Fatal("siem-integration.md must link to siem-queries.md")
+	}
+	if strings.Contains(content, "when available") {
+		t.Fatal("siem-integration.md must not mark siem-queries.md as unavailable")
+	}
+}
+
+func TestSIEMQueriesDocCoversSplunkAndElastic(t *testing.T) {
+	content := readSIEMQueriesDoc(t)
+	required := []string{
+		"Splunk",
+		"SPL",
+		"Elastic",
+		"KQL",
+	}
+	for _, marker := range required {
+		if !strings.Contains(content, marker) {
+			t.Fatalf("SIEM queries doc must cover %q", marker)
+		}
+	}
+}
+
+func TestSIEMQueriesDocIncludesExampleQueries(t *testing.T) {
+	content := readSIEMQueriesDoc(t)
+	required := []string{
+		"index=alertyx",
+		"severity IN",
+		"technique_id",
+		"timechart",
+		"```kql",
+		"```spl",
+		"```eql",
+		"GET alertyx-detections",
+	}
+	for _, marker := range required {
+		if !strings.Contains(content, marker) {
+			t.Fatalf("SIEM queries doc must include example %q", marker)
+		}
+	}
+}
+
+func TestSIEMQueriesDocReferencesEventFields(t *testing.T) {
+	content := readSIEMQueriesDoc(t)
+	fields := []string{
+		"timestamp",
+		"technique",
+		"technique_id",
+		"severity",
+		"process",
+		"username",
+		"details",
+		"artifacts",
+	}
+	for _, field := range fields {
+		if !strings.Contains(content, field) {
+			t.Fatalf("SIEM queries doc must reference field %q", field)
+		}
+	}
 }

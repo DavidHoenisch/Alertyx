@@ -95,6 +95,6 @@ The `--syslog` flag sends human-readable messages to syslog. For SIEM use cases,
 
 ## Related Documentation
 
-- Example Splunk and Elastic queries: [siem-queries.md](./siem-queries.md) (when available)
+- Example Splunk and Elastic queries: [siem-queries.md](./siem-queries.md)
 - JSON output implementation: `output/detection_event.go`
 - Detection mapping: `analysis/detection_event.go`

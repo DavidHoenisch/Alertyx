@@ -69,7 +69,7 @@ Alertyx supports structured JSON output for SIEM platforms (Splunk, Elastic, etc
 sudo ./Alertyx monitor --output json
 ```
 
-See [docs/siem-integration.md](./docs/siem-integration.md) for the event schema, severity mapping, and deployment patterns.
+See [docs/siem-integration.md](./docs/siem-integration.md) for the event schema, severity mapping, and deployment patterns. Example Splunk and Elastic queries are in [docs/siem-queries.md](./docs/siem-queries.md).
 
 ## Information
 
