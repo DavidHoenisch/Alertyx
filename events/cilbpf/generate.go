@@ -7,38 +7,81 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
+
+type bpfTarget struct {
+	stem string
+	src  string
+	typ  string
+}
+
+var bpfTargets = []bpfTarget{
+	{stem: "exec", src: "exec.c", typ: "event_t"},
+	{stem: "open", src: "open.c", typ: "open_event_t"},
+	{stem: "listen", src: "listen.c", typ: "listen_event_t"},
+	{stem: "readline", src: "readline.c", typ: "readline_event_t"},
+}
 
 func main() {
 	root := repoRoot()
 	cilbpf := filepath.Join(root, "events", "cilbpf")
 	src := filepath.Join(cilbpf, "src")
 
-	if err := runBPF2GO(root, src, cilbpf); err != nil {
-		fmt.Fprintf(os.Stderr, "bpf2go: %v\n", err)
-		os.Exit(1)
+	for _, target := range bpfTargets {
+		if err := runBPF2GO(root, src, cilbpf, target); err != nil {
+			fmt.Fprintf(os.Stderr, "bpf2go %s: %v\n", target.stem, err)
+			os.Exit(1)
+		}
 	}
 }
 
-func runBPF2GO(root, src, cilbpf string) error {
+func runBPF2GO(root, src, cilbpf string, target bpfTarget) error {
+	archDefine := bpfTargetArchDefine()
+	if archDefine == "" {
+		return fmt.Errorf("unsupported GOARCH %s for bpf2go", runtime.GOARCH)
+	}
+
 	args := []string{
 		"run", "github.com/cilium/ebpf/cmd/bpf2go",
 		"-go-package", "bpf",
 		"-no-global-types",
-		"-type", "event_t",
+		"-type", target.typ,
 		"-output-dir", filepath.Join(cilbpf, "bpf"),
-		"-output-stem", "exec",
-		"exec",
-		filepath.Join(src, "exec.c"),
+		"-output-stem", target.stem,
+		target.stem,
+		filepath.Join(src, target.src),
 		"--",
 		"-I" + filepath.Join(cilbpf, "headers"),
 		"-I" + src,
+		"-D" + archDefine,
 	}
 	cmd := exec.Command("go", args...)
 	cmd.Dir = root
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func bpfTargetArchDefine() string {
+	switch runtime.GOARCH {
+	case "amd64", "386":
+		return "__TARGET_ARCH_x86"
+	case "arm64":
+		return "__TARGET_ARCH_arm64"
+	case "arm":
+		return "__TARGET_ARCH_arm"
+	case "ppc64le":
+		return "__TARGET_ARCH_powerpc"
+	case "mips64le", "mipsle":
+		return "__TARGET_ARCH_mips"
+	case "riscv64":
+		return "__TARGET_ARCH_riscv"
+	case "s390x":
+		return "__TARGET_ARCH_s390"
+	default:
+		return ""
+	}
 }
 
 func repoRoot() string {

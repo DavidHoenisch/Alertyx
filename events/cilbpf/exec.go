@@ -1,8 +1,6 @@
 package cilbpf
 
 import (
-	"fmt"
-
 	"github.com/DavidHoenisch/Alertyx/events"
 	"github.com/DavidHoenisch/Alertyx/events/cilbpf/bpf"
 	"github.com/cilium/ebpf/link"
@@ -50,25 +48,4 @@ func ExecBPF(evChan chan events.Event, ctx events.Ctx) {
 	readEvents(event, evChan, ctx, rd, eventType)
 	<-ctx.Quit
 	rd.Close()
-}
-
-// LoadExecSpec validates the embedded exec collection can be parsed.
-func LoadExecSpec() error {
-	spec, err := bpf.LoadExecCollectionSpec()
-	if err != nil {
-		return err
-	}
-	if spec == nil {
-		return fmt.Errorf("nil exec collection spec")
-	}
-	requiredPrograms := []string{"tp_enter_execve", "tp_exit_execve"}
-	for _, name := range requiredPrograms {
-		if _, ok := spec.Programs[name]; !ok {
-			return fmt.Errorf("missing program %q in exec collection", name)
-		}
-	}
-	if _, ok := spec.Maps["events"]; !ok {
-		return fmt.Errorf("missing map %q in exec collection", "events")
-	}
-	return nil
 }
